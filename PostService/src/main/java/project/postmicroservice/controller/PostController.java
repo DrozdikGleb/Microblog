@@ -28,7 +28,7 @@ public class PostController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ResponseEntity<Post> getPost(@PathVariable("postId") long postId) {
-        Post post = postRepository.findOne(postId); //проггулить
+        Post post = postRepository.findOne(postId);
         if (post == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -54,21 +54,11 @@ public class PostController {
     @RequestMapping(value = "/post/create/{userId}", method = RequestMethod.POST)
     @Transactional
     public ResponseEntity<Void> createPost(@PathVariable("userId") long userId,
-                                           @RequestBody String message, UriComponentsBuilder ucBuilder) {
+                                           @RequestBody String message) {
         System.out.println("Create user`s post.");
         Post post = new Post(userId, message);
         postRepository.save(post);
         return new ResponseEntity<>(HttpStatus.CREATED);
-        //return new ResponseEntity<>(headers, HttpStatus.CREATED);
-
-//        if (postRepository.existsById(post.getPostId())) {
-//            System.out.println("A Post with id " + post.getPostId() + " already exist");
-//            return new ResponseEntity<>(HttpStatus.CONFLICT);
-//        }
-
-
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(ucBuilder.path("/post/{id}").buildAndExpand(post.getId()).toUri());
     }
 
 
@@ -116,7 +106,7 @@ public class PostController {
             postRepository.delete(p);
         }
         return new ResponseEntity<>(HttpStatus.OK);
-        //Либо
+        //Либо...
 //        postRepository.deleteAllMessageByUserId(userId);
 //        return new ResponseEntity<>(HttpStatus.OK);
     }

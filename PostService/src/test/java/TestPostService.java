@@ -13,30 +13,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 
-
+/**
+ * Для старта необходима пустая БД или параметр create в properties
+ */
 public class TestPostService {
 
     private static final String URL = "http://localhost:8090";
-
-//    @BeforeClass
-//    public static void createPullPost() {
-//        createPost(1, "AbraKadabra");
-//        createPost(2, "Expeliarmus");
-//        createPost(3, "PetrificusTotalus");
-//        createPost(1, "Lumos");
-//        createPost(5, "Nox");
-//        createPost(6, "VinguardimLeviosa");
-//    }
-//
-//    @AfterClass
-//    public static void deleteAllPost() {
-//        deletePost(1L);
-//        deletePost(2L);
-//        deletePost(3L);
-//        deletePost(1L);
-//        deletePost(5L);
-//        deletePost(6L);
-//    }
 
     public static void main(String args[]){
         System.out.println("Create Post");
@@ -68,31 +50,15 @@ public class TestPostService {
         List<Post> posts = getPostByUsers(2);
         assertEquals(2, posts.size());
 
+        System.out.println("Delete post dy user`s ID");
+        deleteAllPostByUserId(2L);
+
         System.out.println("Delete All Post");
         deletePost(1L);
-        deletePost(2L);
         deletePost(3L);
         deletePost(4L);
         deletePost(5L);
         deletePost(6L);
-
-    }
-
-    /* GET */
-    @SuppressWarnings("unchecked")
-    private static void listAllUsers(){
-        System.out.println("Testing listAllUsers API-----------");
-
-        RestTemplate restTemplate = new RestTemplate();
-        List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(URL+"/user/", List.class);
-
-        if(usersMap!=null){
-            for(LinkedHashMap<String, Object> map : usersMap){
-                System.out.println("User : id= "+map.get("id")+", login = "+map.get("login"));
-            }
-        }else{
-            System.out.println("No user exist----------");
-        }
     }
 
     /* GET */
@@ -107,7 +73,6 @@ public class TestPostService {
         List<Post> posts = restTemplate.getForObject(URL+"/post/getall/" + String.valueOf(userId), List.class);
         return posts;
     }
-
 
 
     /* POST */
@@ -129,11 +94,28 @@ public class TestPostService {
         restTemplate.delete(URL+"/post/delete/" + String.valueOf(postId));
     }
 
-
-    /* DELETE */
-    private static void deleteAllUsers() {
-        System.out.println("Testing all delete Users API----------");
+    private static void deleteAllPostByUserId(Long userId) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete(URL+"/user/");
+        restTemplate.delete(URL+"/post/delete/all/" + String.valueOf(userId));
     }
+
+//    @BeforeClass
+//    public static void createPullPost() {
+//        createPost(1, "AbraKadabra");
+//        createPost(2, "Expeliarmus");
+//        createPost(3, "PetrificusTotalus");
+//        createPost(1, "Lumos");
+//        createPost(5, "Nox");
+//        createPost(6, "VinguardimLeviosa");
+//    }
+//
+//    @AfterClass
+//    public static void deleteAllPost() {
+//        deletePost(1L);
+//        deletePost(2L);
+//        deletePost(3L);
+//        deletePost(1L);
+//        deletePost(5L);
+//        deletePost(6L);
+//    }
 }
