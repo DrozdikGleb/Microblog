@@ -1,5 +1,6 @@
 package friendship_microservice;
 
+import friendship_microservice.entity.Friendship;
 import friendship_microservice.repository.FriendshipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
