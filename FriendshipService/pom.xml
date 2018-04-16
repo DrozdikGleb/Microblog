@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.javasampleapproach.restdata</groupId>
-	<artifactId>SpringRestDataManyToMany</artifactId>
+	<groupId>friendship_microservice</groupId>
+	<artifactId>Friendship</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>SpringRestDataManyToMany</name>
-	<description>SpringRestDataManyToMany</description>
+	<name>FriendshipService</name>
+	<description>FriendshipService</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
