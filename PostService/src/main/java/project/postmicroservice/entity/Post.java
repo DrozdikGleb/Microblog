@@ -20,7 +20,7 @@ public class Post implements Serializable {
     private long userId;
     @Column(name="dateID", nullable = false)
     private Date date;
-    @Column(name="messageID")
+    @Column(name="message")
     @Type(type = "text")
     private String message;
 

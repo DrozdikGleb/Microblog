@@ -1,7 +1,5 @@
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.springframework.web.client.RestTemplate;
@@ -9,12 +7,11 @@ import project.postmicroservice.entity.Post;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 
 /**
- * Для старта необходима пустая БД или параметр create в properties
+ * Для старта необходим параметр create в properties
  */
 public class TestPostService {
 
@@ -47,8 +44,8 @@ public class TestPostService {
         arrayList.add(1);
         arrayList.add(2);
         arrayList.add(3);
-        List<Post> posts = getPostByUsers(2);
-        assertEquals(2, posts.size());
+        List<Post> posts = getPostByUsers(arrayList);
+        assertEquals(5, posts.size());
 
         System.out.println("Delete post dy user`s ID");
         deleteAllPostByUserId(2L);
@@ -68,18 +65,17 @@ public class TestPostService {
         return post;
     }
 
-    private static List<Post> getPostByUsers(long userId){
-        RestTemplate restTemplate = new RestTemplate();
-        List<Post> posts = restTemplate.getForObject(URL+"/post/getall/" + String.valueOf(userId), List.class);
-        return posts;
-    }
-
-
     /* POST */
     private static void createPost(long userId, String message) {
         RestTemplate restTemplate = new RestTemplate();
         URI uri = restTemplate.postForLocation(URL + "/post/create/" + String.valueOf(userId),
                 message, String.class);
+    }
+
+    private static List<Post> getPostByUsers(List<Integer> usersId){
+        RestTemplate restTemplate = new RestTemplate();
+        List<Post> posts = restTemplate.postForObject(URL+"/post/getall/", usersId, List.class);
+        return posts;
     }
 
     /* PUT */
@@ -99,23 +95,23 @@ public class TestPostService {
         restTemplate.delete(URL+"/post/delete/all/" + String.valueOf(userId));
     }
 
-//    @BeforeClass
-//    public static void createPullPost() {
-//        createPost(1, "AbraKadabra");
-//        createPost(2, "Expeliarmus");
-//        createPost(3, "PetrificusTotalus");
-//        createPost(1, "Lumos");
-//        createPost(5, "Nox");
-//        createPost(6, "VinguardimLeviosa");
-//    }
-//
-//    @AfterClass
-//    public static void deleteAllPost() {
-//        deletePost(1L);
-//        deletePost(2L);
-//        deletePost(3L);
-//        deletePost(1L);
-//        deletePost(5L);
-//        deletePost(6L);
-//    }
+    @BeforeClass
+    public static void createPullPost() {
+        createPost(1, "AbraKadabra");
+        createPost(2, "Expeliarmus");
+        createPost(3, "PetrificusTotalus");
+        createPost(1, "Lumos");
+        createPost(5, "Nox");
+        createPost(6, "VinguardimLeviosa");
+    }
+
+    @AfterClass
+    public static void deleteAllPost() {
+        deletePost(1L);
+        deletePost(2L);
+        deletePost(3L);
+        deletePost(1L);
+        deletePost(5L);
+        deletePost(6L);
+    }
 }
