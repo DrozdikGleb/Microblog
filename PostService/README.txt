@@ -1,12 +1,12 @@
-Получить один пост по ID поста
+﻿Получить один пост по ID поста
     Запрос: /post/get/{postId}
     Ответ: Post.class (Status.OK) or Status.NOT_FOUND
     Метод: GET
 
-Получить все посты по ID user`a
-    Запрос: /post/getall/{userId}
+Получить все посты по ID списку user`ов
+    Запрос: /post/getall/ HTTP_BODY List<Integer>.class
     Ответ: List<Post>.class (Status.OK) or Status.NOT_FOUND
-    Метод: GET
+    Метод: POST
 
 Добавить пост
     Запрос: /post/create/{userId} HTTP_BODY String.class

@@ -12,6 +12,7 @@ import project.postmicroservice.entity.Post;
 import project.postmicroservice.repository.PostRepository;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO Отправить посты нескольких пользователей
@@ -37,17 +38,22 @@ public class PostController {
 
     //Return all post by User`s ID
 
-    @RequestMapping(value = "/post/getall/{userId}", method = RequestMethod.GET,
+    @RequestMapping(value = "/post/getall/", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    public ResponseEntity<List<Post>> getAllUserPost(@PathVariable("userId") long userId) {
-        List<Post> posts = postRepository.findByUserIdLike(userId);
+    public ResponseEntity<List<Post>> getAllUserPost(@RequestBody List<Integer> usersId) {
+        List<Post> posts = new ArrayList<>();
+        for(int userId : usersId) {
+            List<Post> findResult = postRepository.findByUserIdLike(userId);
+            if(findResult != null) {
+                posts.addAll(findResult);
+            }
+        }
         if (posts == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
-
 
     //Create post
 
