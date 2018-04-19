@@ -9,6 +9,21 @@
 <body>
 <th:block th:replace="partials/nav"></th:block>
 
+<br/><br/>
+<div>
+    <table border="1">
+        <tr>
+            <th>User</th>
+            <th>Text</th>
+            <th>Date and Time</th>
+        </tr>
+        <tr th:each ="post : ${posts}">
+            <td th:utext="${post.getUserId()}">...</td>
+            <td th:utext="${post.getText()}">...</td>
+            <td th:utext="${post.getDateTime()}">...</td>
+        </tr>
+    </table>
+</div>
 
 <th:block th:replace="partials/footer"></th:block>
 </body>

@@ -2,7 +2,7 @@ package ru.sberbank.vkr.microblog.webuiservice.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
-import ru.sberbank.vkr.microblog.webuiservice.interceptors.AuthInterceptor;
+import ru.sberbank.vkr.microblog.webuiservice.interceptor.AuthInterceptor;
 
 @Configuration
 @EnableWebMvc

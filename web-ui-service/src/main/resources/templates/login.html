@@ -13,14 +13,22 @@
 <h1>Login Page</h1>
 
 <div class="container">
-    <form class="form-signin" th:action="@{/login}" method="post">
+    <form class="form-signin" th:action="@{/login}"
+          th:object="${loginForm}" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="form-control" placeholder="Email address" id="j_username" name="j_username" />
-        <input type="password" class="form-control" placeholder="Password" id="j_password" name="j_password"/>
+        <input type="text" class="form-control" th:field="*{login}"
+               placeholder="Login" />
+        <br/>
+        <input type="password" class="form-control" th:field="*{password}"
+               placeholder="Password"/>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
 </div>
 
+<div th:if="${errorMessage}" th:utext="${errorMessage}"
+     style="color:red;font-style:italic;">
+    ...
+</div>
 
 <th:block th:replace="partials/footer"></th:block>
 </body>
