@@ -1,19 +1,14 @@
 package friendship_microservice.repository;
 
 import friendship_microservice.entity.Friendship;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-/**
- * Created by Gleb on 16.04.2018
- */
-
 public interface FriendshipRepository extends PagingAndSortingRepository<Friendship, Long> {
-    //List<Friendship> getAllByUser_id(long id);
-    //List<Friendship> findAllByuser_id(long user_id);
-    @Query(value = "SELECT friendship FROM friendship_tbl friendship WHERE user_id = :user_id", nativeQuery = true)
-    List<Friendship> findFriendshipById(@Param("user_id") Long user_id);
+    List<Friendship> findByUserIdLike(long userId);
+
+    int countFriendshipByUserIdAndFriendIdLike(long userId, long friendId);
+
+    void deleteFriendshipByUserIdAndFriendIdLike(long userId, long friendId);
 }
