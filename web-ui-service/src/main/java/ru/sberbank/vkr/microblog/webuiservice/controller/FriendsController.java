@@ -27,7 +27,7 @@ public class FriendsController {
 
     @GetMapping
     public String getFriends(Model model) {
-        List<Long> friendsId = friendsExchangeClient.getFriendsList(currentUser);
+        List<Long> friendsId = friendsExchangeClient.getFriendsList(new UserDto("",""));
         UsersDto friends = new UsersDto(profileExchangeClient.getFriendsList(friendsId));
         model.addAttribute(friends);
         return FRIENDS_VIEW;

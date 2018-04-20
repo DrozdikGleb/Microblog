@@ -9,7 +9,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
+//    private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -53,8 +53,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 //                return;
 //            }
 //        }
-//
 //        chain.doFilter(wrapRequest, response);
+
+//        if (request.getHeader("userId") == null) {
+//            request.setAttribute("userId", 1L);
+//        }
         return super.preHandle(request, response, handler);
     }
 }

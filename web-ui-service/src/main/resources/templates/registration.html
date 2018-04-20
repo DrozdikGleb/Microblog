@@ -3,32 +3,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Profile</title>
+    <title>Login page</title>
+
     <th:block th:replace="partials/head"></th:block>
+
 </head>
 <body>
-<th:block th:replace="partials/nav"></th:block>
 
-<table th:unless="${editMode}">
-    <tr>
-        <th>Login</th>
-        <th>e-mail</th>
-        <th>First name</th>
-        <th>Last name</th>
-    </tr>
-    <tr>
-        <td th:text="${userDto.login}">login</td>
-        <td th:text="${userDto.email}">email</td>
-        <td th:text="${userDto.firstName}">fname</td>
-        <td th:text="${userDto.lastName}">lname</td>
-    </tr>
-</table>
+<h1>Registration Page</h1>
 
-
-<div th:if="${editMode}" class="container">
-    <form class="form-profile-edit" th:action="@{/me}"
-          th:object="${userDto}" method="put">
-        <h2 class="form-signin-heading">Fill the registration form</h2>
+<div class="container">
+    <form class="form-signin" th:action="@{/me}"
+          th:object="${user}" method="post">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" class="form-control" th:field="*{login}"
+               placeholder="Login" />
+        <br/>
         <input type="password" class="form-control" th:field="*{password}"
                placeholder="Password"/>
         <br/>
@@ -41,7 +31,7 @@
         <input type="text" class="form-control" th:field="*{lastName}"
                placeholder="Last Name"/>
         <br/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirm</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
     </form>
 </div>
 

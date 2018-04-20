@@ -21,7 +21,8 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage() {
+    public String getLoginPage(Model model,
+                               @ModelAttribute("loginForm") LoginForm loginForm) {
         return "login";
     }
 
@@ -29,20 +30,24 @@ public class LoginController {
     public String checkLogin(WebRequest webRequest, Model model,
                              @ModelAttribute("loginForm") LoginForm loginForm) {
 
+//            Long userId = Long.parseLong(webRequest.getHeader("userId"));
+//
+//        if (userId == null) {
+//            String errorMessage = "Invalid userName or Password";
+//
+//            model.addAttribute("errorMessage", errorMessage);
+//            return "login";
+//        }
 
-        Long userId;
-        
-        if (userId == null) {
-            String errorMessage = "Invalid userName or Password";
-
-            model.addAttribute("errorMessage", errorMessage);
-            return "login";
-        }
-        UserDto user  = new UserDto(profileExchangeClient.getUser(userId));
 
         return "redirect:/feed";
     }
 
+    @GetMapping("/registration")
+    public String  register(@ModelAttribute("user")UserDto userDto)
+    {
+        return "registration";
+    }
     @GetMapping("/logout")
     public String logout() {
         return "logout";

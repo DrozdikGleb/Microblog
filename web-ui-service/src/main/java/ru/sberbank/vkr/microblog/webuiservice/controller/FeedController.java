@@ -19,17 +19,16 @@ public class FeedController {
 
     private static final String FEED_VIEW = "feed";
     private final PostExchangeClient postExchangeClient;
-    private final ProfileExchangeClient profileExchangeClient;
 
     @Autowired
     public FeedController(PostExchangeClient postExchangeClient, ProfileExchangeClient profileExchangeClient) {
         this.postExchangeClient = postExchangeClient;
-        this.profileExchangeClient = profileExchangeClient;
     }
 
     @GetMapping
     public String getFeed(Model model) {
-        List<PostDto> posts = postExchangeClient.getFriendsPosts(currentUser.getId());
+
+        List<PostDto> posts = postExchangeClient.getFriendsPosts();
         model.addAttribute(posts);
         return FEED_VIEW;
     }

@@ -5,6 +5,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import org.springframework.boot.context.annotation.Configurations;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -15,17 +16,27 @@ public class SpringWebAppInitializer implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        AnnotationConfigWebApplicationContext appContext = new AnnotationConfigWebApplicationContext();
 
-        // Dispatcher Servlet
-        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("SpringDispatcher",
-                new DispatcherServlet(appContext));
-        dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/");
+        // Creates context object
+        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 
-        dispatcher.setInitParameter("contextClass", appContext.getClass().getName());
+        // Registers annotated configurations class
+        ctx.register(Configurations.class);
 
-        servletContext.addListener(new ContextLoaderListener(appContext));
+        // Sets ContextLoaderListener to servletContext
+        servletContext.addListener(new ContextLoaderListener(ctx));
+
+        // Passes servlet context to context instance
+        ctx.setServletContext(servletContext);
+
+        //Registers dispatch servlet and passes context instance
+        ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
+
+        //Maps URL pattern
+        servlet.addMapping("/");
+
+        //Sets creation priority
+        servlet.setLoadOnStartup(1);
 
         // UTF8 Character Filter.
         FilterRegistration.Dynamic fr = servletContext.addFilter("encodingFilter", CharacterEncodingFilter.class);

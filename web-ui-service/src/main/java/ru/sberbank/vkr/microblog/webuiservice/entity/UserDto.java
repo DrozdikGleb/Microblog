@@ -20,6 +20,9 @@ public class UserDto {
 
     private Integer iconId;
 
+    public UserDto() {
+    }
+
     public UserDto(String login, String password) {
         this.login = login;
         this.password = password;
