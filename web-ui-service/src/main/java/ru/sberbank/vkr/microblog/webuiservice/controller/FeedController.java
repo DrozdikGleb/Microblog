@@ -11,6 +11,7 @@ import ru.sberbank.vkr.microblog.webuiservice.entity.PostDto;
 import ru.sberbank.vkr.microblog.webuiservice.service.PostExchangeClient;
 import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -27,8 +28,11 @@ public class FeedController {
 
     @GetMapping
     public String getFeed(Model model) {
-
-        List<PostDto> posts = postExchangeClient.getFriendsPosts();
+        //TEST!!!! CHANGE THIS METHOD. ADD PARAMETERS List<Integer> listUsersId
+        List<Integer> listUsersId = new ArrayList<>();
+        listUsersId.add(1);
+        List<PostDto> posts = postExchangeClient.getUsersPost(listUsersId);
+        //List<PostDto> posts = postExchangeClient.getUsersPost();
         model.addAttribute(posts);
         return FEED_VIEW;
     }
