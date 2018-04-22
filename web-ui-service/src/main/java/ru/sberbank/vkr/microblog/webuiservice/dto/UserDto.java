@@ -1,4 +1,4 @@
-package ru.sberbank.vkr.microblog.webuiservice.entity;
+package ru.sberbank.vkr.microblog.webuiservice.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,10 +20,9 @@ public class UserDto {
 
     private Integer iconId;
 
-    public UserDto() {
-    }
 
-    public UserDto(String login, String password) {
+    public UserDto(Long id, String login, String password) {
+        this.id = id;
         this.login = login;
         this.password = password;
     }

@@ -1,4 +1,4 @@
-package ru.sberbank.vkr.microblog.webuiservice.entity;
+package ru.sberbank.vkr.microblog.webuiservice.dto;
 
 import lombok.Getter;
 import lombok.Setter;

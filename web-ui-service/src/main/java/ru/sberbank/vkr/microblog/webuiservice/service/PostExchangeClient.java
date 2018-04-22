@@ -1,15 +1,18 @@
 package ru.sberbank.vkr.microblog.webuiservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ru.sberbank.vkr.microblog.webuiservice.entity.PostDto;
-import ru.sberbank.vkr.microblog.webuiservice.entity.PostsDto;
-import ru.sberbank.vkr.microblog.webuiservice.entity.UserDto;
+import ru.sberbank.vkr.microblog.webuiservice.dto.PostDto;
 
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
-@Component
+@Service
 public class PostExchangeClient {
 
     //    private static final String POST_SERVICE_URL = "http://POST_SERVICE";
@@ -22,55 +25,55 @@ public class PostExchangeClient {
         this.restTemplate = restTemplate;
     }
 
-    public PostDto getPost(int postId) {
-        PostDto postDto = restTemplate.getForObject(
+    public PostDto getPost(Long postId) {
+        return restTemplate.getForObject(
                 POST_SERVICE_URL + "/post/get/{userId}", PostDto.class, postId);
-        return postDto;
     }
 
     public PostDto getPost(PostDto postDto) {
-        return restTemplate.getForObject(
-                POST_SERVICE_URL + "/post/get/{userId}", PostDto.class, postDto.getPostId());
+        return getPost(postDto.getPostId());
     }
 
-    public List<PostDto> getUsersPost(List<Integer> usersId) {
-        List<PostDto> postDtos = restTemplate.postForObject(
-                POST_SERVICE_URL + "/post/getall/", usersId, List.class);
-        return postDtos;
+    public List<PostDto> getUsersPost(List<Long> usersId) {
+        PostDto[] forNow = restTemplate.postForObject(
+                POST_SERVICE_URL + "/post/getall/", usersId, PostDto[].class);
+        return Arrays.asList(forNow);
     }
 
-    public void addPost(String message, int userId) {
-        restTemplate.put(POST_SERVICE_URL + "/post/create/{userId}", message, userId);
+    public void addPost(@NotNull String message, Long userId) {
+        ResponseEntity<Void> entity = restTemplate.postForEntity(POST_SERVICE_URL + "/post/create/{userId}",
+                message, Void.class, userId);
+        if (entity.getStatusCode() != HttpStatus.CREATED){
+            throw new RestClientException("Fail to create new user post");
+        }
     }
 
     public void addPost(PostDto postDto) {
-        restTemplate.put(POST_SERVICE_URL +
-                "/post/create/{userId}", postDto.getMessage(), postDto.getUserId());
+        addPost(postDto.getMessage(), postDto.getUserId());
     }
 
-    public void updatePost(String message, int userId) {
-        restTemplate.postForLocation(
+    public void updatePost(String message, Long userId) {
+        restTemplate.put(
                 POST_SERVICE_URL + "/post/update/{postId}", message, userId);
     }
 
     public void updatePost(PostDto postDto) {
-        restTemplate.postForLocation(POST_SERVICE_URL +
-                "/post/update/{postId}", postDto.getMessage(), postDto.getUserId());
+        updatePost(postDto.getMessage(), postDto.getUserId());
     }
 
-    public void deletePost(int postId) {
+    public void deletePost(Long postId) {
         restTemplate.delete(POST_SERVICE_URL + "/post/delete/{postId}", postId);
     }
 
     public void deletePost(PostDto postDto) {
-        restTemplate.delete(POST_SERVICE_URL + "/post/delete/{postId}", postDto.getPostId());
+        deletePost(postDto.getPostId());
     }
 
-    public void deleteAllUserPost(int userId) {
+    public void deleteAllUserPost(Long userId) {
         restTemplate.delete(POST_SERVICE_URL + "/post/delete/all/{userId}", userId);
     }
 
     public void deleteAllUserPost(PostDto postDto) {
-        restTemplate.delete(POST_SERVICE_URL + "/post/delete/all/{userId}", postDto.getUserId());
+        deleteAllUserPost(postDto.getUserId());
     }
 }

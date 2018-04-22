@@ -1,4 +1,4 @@
-package ru.sberbank.vkr.microblog.webuiservice.entity;
+package ru.sberbank.vkr.microblog.webuiservice.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -7,12 +7,13 @@ import lombok.ToString;
 
 import java.util.Date;
 
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode
 @ToString
 public class PostDto {
-    private long postId;
-    private long userId;
+    private Long postId;
+    private Long userId;
     private Date date;
     private String message;
 
@@ -27,4 +28,5 @@ public class PostDto {
         this.date = date;
         this.message = message;
     }
+
 }
