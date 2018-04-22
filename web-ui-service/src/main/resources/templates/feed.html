@@ -9,21 +9,45 @@
 <body>
 <th:block th:replace="partials/nav"></th:block>
 
-<br/><br/>
+<br/>
+
+<div class="container">
+    <form class="form-create-post" th:action="@{/feed}"
+          th:object="${newPost}" method="post">
+        <h2 class="form-signin-heading">Create post</h2>
+        <input type="text" class="form-control" th:field="*{message}"
+               placeholder="Message" />
+        <br/>
+        <input type="text" class="form-control" th:field="*{userId}"
+               placeholder="user"/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+    </form>
+</div>
+
+<br/>
 <div>
     <table border="1">
         <tr>
             <th>User</th>
             <th>Text</th>
             <th>Date and Time</th>
+            <th>Delete</th>
+            <th>Update</th>
         </tr>
         <tr th:each ="post : ${posts}">
-            <td th:utext="${post.getUserId()}">...</td>
-            <td th:utext="${post.getText()}">...</td>
-            <td th:utext="${post.getDateTime()}">...</td>
+            <td th:utext="${post.userId}">...</td>
+            <td th:utext="${post.message}">...</td>
+            <td th:utext="${post.date}">...</td>
+            <td><form action="#" th:action="@{'/feed'}" th:method="delete" >
+                <input type="hidden" name="_method" value="delete" />
+                <button type="submit" id="submitButton">Delete</button>
+            </form></td>
+            <td></td>
         </tr>
     </table>
 </div>
+
+
 
 <th:block th:replace="partials/footer"></th:block>
 </body>
