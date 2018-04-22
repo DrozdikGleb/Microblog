@@ -41,6 +41,22 @@ public class MainController {
 			System.out.println("User with id " + id + " not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		user.setPassword(null);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/userauth/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<User> getUserAuth(@PathVariable("login") String login) {
+		System.out.println("Fetching User with login " + login);
+		User user = userRepository.findByLogin(login);
+		if (user == null) {
+			System.out.println("User with login " + login + " not found");
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		user.setFirstName(null);
+		user.setLastName(null);
+		user.setIconId(null);
+		user.setEmail(null);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
