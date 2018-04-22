@@ -22,7 +22,7 @@ public class TestApi {
 		
 		if(usersMap!=null){
 			for(LinkedHashMap<String, Object> map : usersMap){
-	            System.out.println("User : id= "+map.get("id")+", login = "+map.get("login"));
+	            System.out.println("User : id= "+map.get("id")+", name = "+map.get("firstName"));
 	        }
 		}else{
 			System.out.println("No user exist----------");

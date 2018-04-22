@@ -42,6 +42,7 @@ public class MainController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		user.setPassword(null);
+		user.setLogin(null);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
