@@ -16,18 +16,18 @@
         <th>First name</th>
         <th>Last name</th>
     </tr>
-    <tr>
-        <td th:text="${userDto.login}">login</td>
-        <td th:text="${userDto.email}">email</td>
-        <td th:text="${userDto.firstName}">fname</td>
-        <td th:text="${userDto.lastName}">lname</td>
+    <tr th:object = "${user}">
+        <td th:text="*{login}">login</td>
+        <td th:text="*{email}">email</td>
+        <td th:text="*{firstName}">fname</td>
+        <td th:text="*{lastName}">lname</td>
     </tr>
 </table>
 
 
 <div th:if="${editMode}" class="container">
     <form class="form-profile-edit" th:action="@{/me}"
-          th:object="${userDto}" method="put">
+          th:object="${user}" method="put">
         <h2 class="form-signin-heading">Fill the registration form</h2>
         <input type="password" class="form-control" th:field="*{password}"
                placeholder="Password"/>

@@ -1,10 +1,11 @@
 package ru.sberbank.vkr.microblog.webuiservice.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class UserDto {
     private Long id;
 
@@ -27,13 +28,4 @@ public class UserDto {
         this.password = password;
     }
 
-    public UserDto(UserDto user) {
-        this.id = user.id;
-        this.login = user.login;
-        this.password = user.password;
-        this.email = user.email;
-        this.firstName = user.firstName;
-        this.lastName = user.lastName;
-        this.iconId = user.iconId;
-    }
 }

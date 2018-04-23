@@ -1,15 +1,12 @@
 package ru.sberbank.vkr.microblog.webuiservice.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class PostDto {
     private Long postId;
@@ -19,13 +16,6 @@ public class PostDto {
 
     public PostDto(long userId, String message) {
         this.userId = userId;
-        this.message = message;
-    }
-
-    public PostDto(long postId, long userId, Date date, String message) {
-        this.postId = postId;
-        this.userId = userId;
-        this.date = date;
         this.message = message;
     }
 

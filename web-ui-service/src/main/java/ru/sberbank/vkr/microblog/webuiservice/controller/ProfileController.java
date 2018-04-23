@@ -1,10 +1,12 @@
 package ru.sberbank.vkr.microblog.webuiservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.sberbank.vkr.microblog.webuiservice.dto.UserDto;
+import ru.sberbank.vkr.microblog.webuiservice.entity.AppUser;
 import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeClient;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/me")
 public class ProfileController {
+
+
     private static final String PROFILE_VIEW = "me";
 
     private final ProfileExchangeClient profileExchangeClient;
@@ -22,11 +26,12 @@ public class ProfileController {
     }
 
     @GetMapping
-    public String showProfile(@ModelAttribute UserDto user, HttpServletRequest request, Model model) {
+    public String showProfile(Model model, Authentication authentication) {
+        AppUser currentUser = (AppUser) authentication.getPrincipal();
+
+        UserDto user = profileExchangeClient.getUser(currentUser.getId());
+        model.addAttribute("user", user);
         model.addAttribute("editMode", false);
-        Long currentUserId = Long.parseLong(request.getHeader("userId"));
-        UserDto currentUser = profileExchangeClient.getUser(currentUserId);
-        model.addAttribute(currentUser);
         return PROFILE_VIEW;
     }
 
@@ -39,8 +44,8 @@ public class ProfileController {
 
     @PostMapping
     public String createProfile(@ModelAttribute UserDto user) {
-
-        return PROFILE_VIEW;
+        profileExchangeClient.createUser(user);
+        return "login";
     }
 
     @DeleteMapping

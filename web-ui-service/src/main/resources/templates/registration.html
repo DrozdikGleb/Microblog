@@ -13,8 +13,8 @@
 <h1>Registration Page</h1>
 
 <div class="container">
-    <form class="form-signin" th:action="@{/me}"
-          th:object="${user}" method="post">
+    <form class="form-signin" th:action="@{/register}"
+          th:object="${newUser}" method='POST'>
         <h2 class="form-signin-heading">Please sign in</h2>
         <input type="text" class="form-control" th:field="*{login}"
                placeholder="Login" />

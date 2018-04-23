@@ -38,7 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // The pages does not require login
         http.authorizeRequests()
-                .antMatchers("/", "/login", "/logout").permitAll()
+                .antMatchers("/resources/**").permitAll()
+                .antMatchers("/", "/login", "/logout", "/register").permitAll()
                 .anyRequest().authenticated();
 
         // /userInfo page requires login as ROLE_USER.
@@ -55,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Submit URL of login page.
                 .loginProcessingUrl("/j_spring_security_check") // Submit URL
                 .loginPage("/login")//
-                .defaultSuccessUrl("/feed")//
+                .defaultSuccessUrl("/",true)//
                 .failureUrl("/login?error=true")//
                 .usernameParameter("username")//
                 .passwordParameter("password")

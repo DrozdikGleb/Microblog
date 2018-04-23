@@ -1,9 +1,7 @@
 package ru.sberbank.vkr.microblog.webuiservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +12,8 @@ import ru.sberbank.vkr.microblog.webuiservice.service.FriendsExchangeClient;
 import ru.sberbank.vkr.microblog.webuiservice.service.PostExchangeClient;
 import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeClient;
 
-import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -37,18 +36,17 @@ public class FeedController {
 
     @GetMapping
     public String getFeed(Model model, Authentication authentication) {
-        //TEST!!!! CHANGE THIS METHOD. ADD PARAMETERS List<Integer> listUsersId
-
         AppUser currentUser = (AppUser) authentication.getPrincipal();
 
         UserDto user = profileExchangeClient.getUser(currentUser.getId());
         model.addAttribute("user", user);
 
-        List<Long> friendsIdList = friendsExchangeClient.getFriendsList(currentUser.getId());
+        List<Long> friendsIdList = new ArrayList<>();
         friendsIdList.add(currentUser.getId());
+        friendsIdList.addAll(friendsExchangeClient.getFriendsList(currentUser.getId()));
 
         List<PostDto> posts = postExchangeClient.getUsersPost(friendsIdList);
-        posts.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+        posts.sort(Comparator.comparing(PostDto::getDate));
 
         model.addAttribute("posts", posts);
         model.addAttribute("newPost", new PostDto(currentUser.getId(), null));
@@ -70,7 +68,7 @@ public class FeedController {
 
     @PutMapping
     @ResponseBody
-    public String updatePost(@ModelAttribute("deletePost") PostDto postDto, Model model, Authentication authentication) {
+    public String updatePost(@ModelAttribute("updatedPost") PostDto postDto, Model model, Authentication authentication) {
         return getFeed(model, authentication);
     }
 }

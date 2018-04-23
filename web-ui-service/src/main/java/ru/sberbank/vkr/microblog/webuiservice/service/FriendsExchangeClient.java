@@ -1,17 +1,20 @@
 package ru.sberbank.vkr.microblog.webuiservice.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-import ru.sberbank.vkr.microblog.webuiservice.dto.FriendsDto;
 import ru.sberbank.vkr.microblog.webuiservice.dto.UserDto;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FriendsExchangeClient {
+    private static final Logger logger = LoggerFactory.getLogger(ProfileExchangeClient.class);
 
-    //    private static final String FRIENDS_SERVICE_URL = "http://FRIENDS_SERVICE";
     private static final String FRIENDS_SERVICE_URL = "http://localhost:8091";
 
     private final RestTemplate restTemplate;
@@ -22,8 +25,14 @@ public class FriendsExchangeClient {
     }
 
     public List<Long> getFriendsList(Long userId) {
-        FriendsDto friends = restTemplate.getForObject(FRIENDS_SERVICE_URL + "/{userId}", FriendsDto.class, userId);
-        return friends.getItems();
+        try {
+            Long[] friends = restTemplate.getForObject(FRIENDS_SERVICE_URL + "/friendship/{userId}", Long[].class, userId);
+            return Arrays.asList(friends);
+        } catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc) {
+            logger.debug("Getting friends id list for user {} returns {} : {}", userId,
+                    httpClientOrServerExc.getStatusCode(), httpClientOrServerExc.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     public List<Long> getFriendsList(UserDto userDto) {
@@ -31,7 +40,7 @@ public class FriendsExchangeClient {
     }
 
     public void follow(Long userId, Long friendId) {
-        restTemplate.put(FRIENDS_SERVICE_URL + "/{userId}/{friendId}", userId, friendId);
+        restTemplate.put(FRIENDS_SERVICE_URL + "/friendship/{userId}/{friendId}", userId, friendId);
     }
 
     public void follow(UserDto user, UserDto friend) {
@@ -39,7 +48,7 @@ public class FriendsExchangeClient {
     }
 
     public void unfollow(Long userId, Long friendId) {
-        restTemplate.delete(FRIENDS_SERVICE_URL + "/{userId}/{friendId}", userId, friendId);
+        restTemplate.delete(FRIENDS_SERVICE_URL + "/friendship/{userId}/{friendId}", userId, friendId);
     }
 
     public void unfollow(UserDto user, UserDto friend) {

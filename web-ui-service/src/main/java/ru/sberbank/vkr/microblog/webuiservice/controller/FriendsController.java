@@ -1,11 +1,11 @@
 package ru.sberbank.vkr.microblog.webuiservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.sberbank.vkr.microblog.webuiservice.dto.UserDto;
-import ru.sberbank.vkr.microblog.webuiservice.dto.UsersDto;
 import ru.sberbank.vkr.microblog.webuiservice.entity.AppUser;
 import ru.sberbank.vkr.microblog.webuiservice.service.FriendsExchangeClient;
 import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeClient;
@@ -28,33 +28,35 @@ public class FriendsController {
     }
 
     @GetMapping
-    public String getFriends(Model model, Principal principal) {
-        AppUser currentUser = (AppUser) principal;
+    public String getFriends(Model model, Authentication authentication) {
+        AppUser currentUser = (AppUser) authentication.getPrincipal();
 
         List<Long> friendsId = friendsExchangeClient.getFriendsList(currentUser.getId());
-        UsersDto friends = new UsersDto(profileExchangeClient.getFriendsList(friendsId));
+        List<UserDto> friends = profileExchangeClient.getFriendsList(friendsId);
         model.addAttribute(friends);
         return FRIENDS_VIEW;
     }
 
     @GetMapping("/find")
     public String findFriends(Model model) {
-        UsersDto users = new UsersDto(profileExchangeClient.getUsersList());
+        List<UserDto> users = profileExchangeClient.getUsersList();
         model.addAttribute(users);
         return FRIENDS_VIEW;
     }
 
     @PostMapping
-    public String addFriend(@ModelAttribute UserDto newFriend) {
-        Long userId = 1L;
-        friendsExchangeClient.follow(userId, newFriend.getId());
+    public String addFriend(@ModelAttribute UserDto newFriend, Authentication authentication) {
+        AppUser currentUser = (AppUser) authentication.getPrincipal();
+
+        friendsExchangeClient.follow(currentUser.getId(), newFriend.getId());
         return FRIENDS_VIEW;
     }
 
     @DeleteMapping
-    public String deleteFriend(@ModelAttribute UserDto friend) {
-        Long userId = 1L;
-        friendsExchangeClient.unfollow(userId, friend.getId());
+    public String deleteFriend(@ModelAttribute UserDto friend, Authentication authentication) {
+        AppUser currentUser = (AppUser) authentication.getPrincipal();
+
+        friendsExchangeClient.unfollow(currentUser.getId(), friend.getId());
         return FRIENDS_VIEW;
     }
 }

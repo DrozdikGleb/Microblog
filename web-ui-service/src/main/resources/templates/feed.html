@@ -14,18 +14,17 @@
 <div class="container">
     <form class="form-create-post" th:action="@{/feed}"
           th:object="${newPost}" method="post">
-        <h2 class="form-signin-heading">Create post</h2>
+        <h3 class="form-signin-heading">Create post</h3>
         <input type="text" class="form-control" th:field="*{message}"
-               placeholder="Message" />
+               placeholder="Message"/>
         <br/>
-        <input type="text" class="form-control" th:field="*{userId}"
-               placeholder="user"/>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
     </form>
 </div>
 
 <br/>
 <div>
+    <h3>News feed</h3>
     <table border="1">
         <tr>
             <th>User</th>
@@ -34,20 +33,46 @@
             <th>Delete</th>
             <th>Update</th>
         </tr>
-        <tr th:each ="post : ${posts}">
+        <tr th:each="post : ${posts}">
             <td th:utext="${post.userId}">...</td>
             <td th:utext="${post.message}">...</td>
             <td th:utext="${post.date}">...</td>
-            <td th:if="${post.userId}==1"><form action="#" th:action="@{'/feed'}" th:method="delete" >
-                <input type="hidden" th:value="${post}" />
-                <button type="submit" id="submitButton">Delete</button>
-            </form></td>
+            <td th:if="${post.userId == #request.getParameter('userId')}">
+                <form action="#" th:action="@{'/feed'}" th:method="delete">
+                    <input type="hidden" th:value="${post}"/>
+                    <button type="submit" id="submitButton">Delete</button>
+                </form>
+            </td>
             <td></td>
         </tr>
     </table>
 </div>
 
+<div class="news_feed" th:each="post : ${posts}">
+    <div class="_post_content">
 
+        <div class="post_header">
+            <!--<a class="post_image" href="/zanevskoe">-->
+                <!--<img src="https://pp.userapi.com/c620523/v620523823/1da54/x4jRv-KDX4w.jpg" width="50" height="50" class="post_img"> </a>-->
+
+            <div class="post_header_info">
+                <h5 class="post_author">
+                    <a class="author" href="#" th:utext="${post.userId}"></a></h5>
+                <div class="post_date"><a class="post_link"><span class="rel_date rel_date_needs_update"
+                                                                  th:utext="${post.date}"></span></a></div>
+            </div>
+        </div>
+        <div class="post_content">
+            <div class="post_info">
+                <div class="wall_text">
+                    <div id="wpt184981823_3932" class="wall_post_cont _wall_post_cont">
+                        <div class="wall_post_text" th:utext="${post.message}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <th:block th:replace="partials/footer"></th:block>
 </body>

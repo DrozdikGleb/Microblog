@@ -26,7 +26,7 @@
 
 <h3>Enter user name and password:</h3>
 <div class="container">
-    <form name='f' th:action="@{/j_spring_security_check}" method='POST'>
+    <form name='lp' th:action="@{/j_spring_security_check}" method='POST'>
         <table>
             <tr>
                 <td>User:</td>
@@ -37,11 +37,17 @@
                 <td><input type='password' name='password'/></td>
             </tr>
             <tr>
-                <td><input name="submit" type="submit" value="submit"/></td>
+                <td><button class="btn btn-lg btn-primary btn-block" type="submit">Sing in</button></td>
             </tr>
         </table>
     </form>
 </div>
+
+<br/>
+
+<form th:action="@{/register}" method='GET'>
+    <input type="button" value="Registration">
+</form>
 
 
 <th:block th:replace="partials/footer"></th:block>
