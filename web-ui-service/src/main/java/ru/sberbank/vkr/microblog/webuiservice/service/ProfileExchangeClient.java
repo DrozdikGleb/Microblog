@@ -17,7 +17,7 @@ public class ProfileExchangeClient {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    private static final String PROFILE_SERVICE_NAME = "FRIEND-SERVICE";
+    private static final String PROFILE_SERVICE_NAME = "PROFILE-SERVICE";
 
     private static String PROFILE_SERVICE_URL;
 //    private static final String PROFILE_SERVICE_URL = "http://localhost:8081";
