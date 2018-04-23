@@ -13,9 +13,17 @@ server:
 # custom attribute for the actuator info endpoint
 info:
   app:
-    name: web-service
+    name: WEB-SERVICE
 
 # give the application a name
 spring:
   application:
-    name: web-service
+    name: WEB-SERVICE
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+

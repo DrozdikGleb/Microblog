@@ -1,22 +1,23 @@
 package ru.sberbank.vkr.microblog.webuiservice.service;
 
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import ru.sberbank.vkr.microblog.webuiservice.dto.PostDto;
-
-import javax.validation.constraints.NotNull;
-import java.util.Arrays;
+import ru.sberbank.vkr.microblog.webuiservice.entity.PostDto;
 import java.util.List;
 
-@Service
+@Component
 public class PostExchangeClient {
 
-    //    private static final String POST_SERVICE_URL = "http://POST_SERVICE";
-    private static final String POST_SERVICE_URL = "http://localhost:8090";
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    private static final String POST_SERVICE_NAME = "POST-SERVICE";
+
+    private static String POST_SERVICE_URL;
+    //private static final String POST_SERVICE_URL = "http://localhost:8090";
 
     private final RestTemplate restTemplate;
 
@@ -25,55 +26,91 @@ public class PostExchangeClient {
         this.restTemplate = restTemplate;
     }
 
-    public PostDto getPost(Long postId) {
-        return restTemplate.getForObject(
+    public PostDto getPost(int postId) {
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
+        PostDto postDto = restTemplate.getForObject(
                 POST_SERVICE_URL + "/post/get/{userId}", PostDto.class, postId);
+        return postDto;
     }
 
     public PostDto getPost(PostDto postDto) {
-        return getPost(postDto.getPostId());
-    }
-
-    public List<PostDto> getUsersPost(List<Long> usersId) {
-        PostDto[] forNow = restTemplate.postForObject(
-                POST_SERVICE_URL + "/post/getall/", usersId, PostDto[].class);
-        return Arrays.asList(forNow);
-    }
-
-    public void addPost(@NotNull String message, Long userId) {
-        ResponseEntity<Void> entity = restTemplate.postForEntity(POST_SERVICE_URL + "/post/create/{userId}",
-                message, Void.class, userId);
-        if (entity.getStatusCode() != HttpStatus.CREATED){
-            throw new RestClientException("Fail to create new user post");
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
         }
+        return restTemplate.getForObject(
+                POST_SERVICE_URL + "/post/get/{userId}", PostDto.class, postDto.getPostId());
+    }
+
+    public List<PostDto> getUsersPost(List<Integer> usersId) {
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI("POST-SERVICE");
+        }
+        List<PostDto> postDtos = restTemplate.postForObject(
+                POST_SERVICE_URL + "/post/getall/", usersId, List.class);
+        return postDtos;
+    }
+
+    public void addPost(String message, int userId) {
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
+        restTemplate.put(POST_SERVICE_URL + "/post/create/{userId}", message, userId);
     }
 
     public void addPost(PostDto postDto) {
-        addPost(postDto.getMessage(), postDto.getUserId());
+        restTemplate.put(POST_SERVICE_URL +
+                "/post/create/{userId}", postDto.getMessage(), postDto.getUserId());
     }
 
-    public void updatePost(String message, Long userId) {
-        restTemplate.put(
+    public void updatePost(String message, int userId) {
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
+        restTemplate.postForLocation(
                 POST_SERVICE_URL + "/post/update/{postId}", message, userId);
     }
 
     public void updatePost(PostDto postDto) {
-        updatePost(postDto.getMessage(), postDto.getUserId());
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
+        restTemplate.postForLocation(POST_SERVICE_URL +
+                "/post/update/{postId}", postDto.getMessage(), postDto.getUserId());
     }
 
-    public void deletePost(Long postId) {
+    public void deletePost(int postId) {
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
         restTemplate.delete(POST_SERVICE_URL + "/post/delete/{postId}", postId);
     }
 
     public void deletePost(PostDto postDto) {
-        deletePost(postDto.getPostId());
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
+        restTemplate.delete(POST_SERVICE_URL + "/post/delete/{postId}", postDto.getPostId());
     }
 
-    public void deleteAllUserPost(Long userId) {
+    public void deleteAllUserPost(int userId) {
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
         restTemplate.delete(POST_SERVICE_URL + "/post/delete/all/{userId}", userId);
     }
 
     public void deleteAllUserPost(PostDto postDto) {
-        deleteAllUserPost(postDto.getUserId());
+        if(POST_SERVICE_URL == null) {
+            POST_SERVICE_URL = getURI(POST_SERVICE_NAME);
+        }
+        restTemplate.delete(POST_SERVICE_URL + "/post/delete/all/{userId}", postDto.getUserId());
+    }
+
+    private String getURI(String appName) {
+        List<ServiceInstance> instances = discoveryClient.getInstances(appName);
+        ServiceInstance instance = instances.get(0);
+        return instance.getUri().toString();
     }
 }
