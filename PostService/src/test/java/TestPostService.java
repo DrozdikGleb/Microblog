@@ -27,35 +27,35 @@ public class TestPostService {
         createPost(6, "VinguardimLeviosa");
         createPost(2, "Bum");
 
-        System.out.println("Update Post");
-        updatePost(2, "AAAAAAAAA");
-
-        System.out.println("Get one Post");
-        Post post;
-        post = getPost(1);
-        assertEquals("AbraKadabra", post.getMessage());
-        post = getPost(6);
-        assertEquals("VinguardimLeviosa", post.getMessage());
-        post = getPost(2);
-        assertEquals("AAAAAAAAA", post.getMessage());
-
-        System.out.println("Get many Post`s");
-        ArrayList<Integer> arrayList = new ArrayList();
-        arrayList.add(1);
-        arrayList.add(2);
-        arrayList.add(3);
-        List<Post> posts = getPostByUsers(arrayList);
-        assertEquals(5, posts.size());
-
-        System.out.println("Delete post dy user`s ID");
-        deleteAllPostByUserId(2L);
-
-        System.out.println("Delete All Post");
-        deletePost(1L);
-        deletePost(3L);
-        deletePost(4L);
-        deletePost(5L);
-        deletePost(6L);
+//        System.out.println("Update Post");
+//        updatePost(2, "AAAAAAAAA");
+//
+//        System.out.println("Get one Post");
+//        Post post;
+//        post = getPost(1);
+//        assertEquals("AbraKadabra", post.getMessage());
+//        post = getPost(6);
+//        assertEquals("VinguardimLeviosa", post.getMessage());
+//        post = getPost(2);
+//        assertEquals("AAAAAAAAA", post.getMessage());
+//
+//        System.out.println("Get many Post`s");
+//        ArrayList<Integer> arrayList = new ArrayList();
+//        arrayList.add(1);
+//        arrayList.add(2);
+//        arrayList.add(3);
+//        List<Post> posts = getPostByUsers(arrayList);
+//        assertEquals(5, posts.size());
+//
+//        System.out.println("Delete post dy user`s ID");
+//        deleteAllPostByUserId(2L);
+//
+//        System.out.println("Delete All Post");
+//        deletePost(1L);
+//        deletePost(3L);
+//        deletePost(4L);
+//        deletePost(5L);
+//        deletePost(6L);
     }
 
     /* GET */
