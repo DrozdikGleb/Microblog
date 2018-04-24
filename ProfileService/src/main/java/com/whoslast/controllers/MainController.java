@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 public class MainController {
 
@@ -28,6 +31,25 @@ public class MainController {
 		*/
 
 		return new ResponseEntity<>(iterable, HttpStatus.OK);
+	}
+
+
+	//-------------------Retrieve list of Users by id--------------------------------------------------------
+
+	@RequestMapping(value = "/users/{ids}", method = RequestMethod.GET)
+	public ResponseEntity<Iterable<User>> listUsersById(@PathVariable("ids") String[] ids) {
+		User user;
+		System.out.println("listing users");
+		List<User> list = new ArrayList<>();
+
+		for(String el: ids){
+			user = userRepository.findOne(Long.valueOf(el));
+			user.setLogin(null);
+			user.setPassword(null);
+			list.add(user);
+		}
+
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
 
