@@ -1,50 +1,88 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Profile</title>
-    <th:block th:replace="partials/head"></th:block>
-</head>
+<head lang="en" th:include="fragments/header :: header-css">
+
 <body>
-<th:block th:replace="partials/nav"></th:block>
+<header th:replace="fragments/header :: header"/>
 
-<table th:unless="${editMode}">
-    <tr>
-        <th>Login</th>
-        <th>e-mail</th>
-        <th>First name</th>
-        <th>Last name</th>
-    </tr>
-    <tr>
-        <td th:text="${userDto.login}">login</td>
-        <td th:text="${userDto.email}">email</td>
-        <td th:text="${userDto.firstName}">fname</td>
-        <td th:text="${userDto.lastName}">lname</td>
-    </tr>
-</table>
+<div class="container-fluid">
+    <br/>
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="panel-group" th:unless="${enableEdit}" th:object="${user}">
+                <div class="panel panel-default">
+                    <div class="panel-heading">e-mail</div>
+                    <div class="panel-body" th:text="*{email}"></div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Имя</div>
+                    <div class="panel-body" th:text="*{firstName}"></div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Фвмилия</div>
+                    <div class="panel-body" th:text="*{lastName}"></div>
+                </div>
+                <div class="panel panel-default">
+                    <form class="form-horizontal" th:action="@{/me/delete}" method='post'>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <input type="hidden" name="userId" th:field="*{id}">
+                                <button type="submit" class="btn btn-primary">Удалить пользователя</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
 
 
-<div th:if="${editMode}" class="container">
-    <form class="form-profile-edit" th:action="@{/me}"
-          th:object="${userDto}" method="put">
-        <h2 class="form-signin-heading">Fill the registration form</h2>
-        <input type="password" class="form-control" th:field="*{password}"
-               placeholder="Password"/>
-        <br/>
-        <input type="text" class="form-control" th:field="*{email}"
-               placeholder="E-mail"/>
-        <br/>
-        <input type="text" class="form-control" th:field="*{firstName}"
-               placeholder="First Name"/>
-        <br/>
-        <input type="text" class="form-control" th:field="*{lastName}"
-               placeholder="Last Name"/>
-        <br/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirm</button>
-    </form>
+            <form class="form-horizontal" th:unless="${enableEdit}" th:action="@{/me}" method='get'>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type='hidden' name='act' value='edit'/>
+                        <button type="submit" class="btn btn-primary">Изменить</button>
+                    </div>
+                </div>
+            </form>
+
+            <form class="form-horizontal" th:if="${enableEdit}" th:action="@{/me/edit}" th:object="${user}" method='post'>
+                <div class="form-group">
+                    <input type="hidden" id="userId" name="userId" th:field="*{id}">
+
+                    <label class="control-label col-sm-2">e-mail:</label>
+                    <div class="col-sm-6">
+                        <input type="email" class="form-control" id="email" placeholder="Введите e-mail" name="email"
+                               th:field="*{email}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Имя:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="firstName" placeholder="Введите имя"
+                               name="firstName"
+                               th:field="*{firstName}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Фамилия:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="lastName" placeholder="Введите фамилию"
+                               name="lastName"
+                               th:field="*{lastName}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Применить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
 </div>
-
-<th:block th:replace="partials/footer"></th:block>
+<footer th:replace="fragments/footer :: footer"/>
 </body>
 </html>

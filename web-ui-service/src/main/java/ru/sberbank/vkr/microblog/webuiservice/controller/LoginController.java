@@ -1,55 +1,56 @@
 package ru.sberbank.vkr.microblog.webuiservice.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.context.request.WebRequest;
-import ru.sberbank.vkr.microblog.webuiservice.entity.LoginForm;
-import ru.sberbank.vkr.microblog.webuiservice.entity.UserDto;
-import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeClient;
+import ru.sberbank.vkr.microblog.webuiservice.dto.UserDto;
+import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeService;
 
 @Controller
 public class LoginController {
-    private final ProfileExchangeClient profileExchangeClient;
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+    public static final String LOGIN_VIEW = "login";
+
+    private final ProfileExchangeService profileExchangeService;
 
     @Autowired
-    public LoginController(ProfileExchangeClient profileExchangeClient) {
-        this.profileExchangeClient = profileExchangeClient;
+    public LoginController(ProfileExchangeService profileExchangeService) {
+        this.profileExchangeService = profileExchangeService;
     }
 
     @GetMapping("/login")
-    public String getLoginPage(Model model,
-                               @ModelAttribute("loginForm") LoginForm loginForm) {
-        return "login";
+    public String getLoginPage() {
+        logger.debug("Rendering login page.");
+        return LOGIN_VIEW;
     }
 
-    @PostMapping("/login")
-    public String checkLogin(WebRequest webRequest, Model model,
-                             @ModelAttribute("loginForm") LoginForm loginForm) {
-
-//            Long userId = Long.parseLong(webRequest.getHeader("userId"));
-//
-//        if (userId == null) {
-//            String errorMessage = "Invalid userName or Password";
-//
-//            model.addAttribute("errorMessage", errorMessage);
-//            return "login";
-//        }
-
-
-        return "redirect:/feed";
+    @GetMapping("/logoutSuccessful")
+    public String logoutSuccessfulPage() {
+        logger.debug("Rendering login successfull page.");
+        return "logoutSuccessful";
     }
 
-    @GetMapping("/registration")
-    public String  register(@ModelAttribute("user")UserDto userDto)
-    {
+    @GetMapping("/register")
+    public String register(Model model) {
+        logger.debug("Rendering registration page.");
+
+        model.addAttribute("newUser", new UserDto());
         return "registration";
     }
-    @GetMapping("/logout")
-    public String logout() {
-        return "logout";
+
+    @PostMapping("register")
+    public String registerUser(@ModelAttribute UserDto user) {
+        logger.debug("Process creating new user: {}", user);
+
+        profileExchangeService.createUser(user);
+        return LOGIN_VIEW;
     }
 }
+
+
