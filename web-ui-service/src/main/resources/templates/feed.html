@@ -1,79 +1,41 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Microblog homepage</title>
-    <th:block th:replace="partials/head"></th:block>
-</head>
+<head lang="en" th:include="fragments/header :: header-css">
 <body>
-<th:block th:replace="partials/nav"></th:block>
 
-<br/>
+<header th:replace="fragments/header :: header"/>
 
-<div class="container">
-    <form class="form-create-post" th:action="@{/feed}"
-          th:object="${newPost}" method="post">
-        <h3 class="form-signin-heading">Create post</h3>
-        <input type="text" class="form-control" th:field="*{message}"
-               placeholder="Message"/>
-        <br/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-    </form>
-</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <form class="form-create-post" th:action="@{/feed}"
+                  th:object="${newPost}" method="post">
+                <h3 class="form-signin-heading">Создать новость</h3>
+                <input type="text" class="form-control" th:field="*{message}"
+                       placeholder="Message"/>
+                <br/>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Опубликовать</button>
+            </form>
+            <br/>
 
-<br/>
-<div>
-    <h3>News feed</h3>
-    <table border="1">
-        <tr>
-            <th>User</th>
-            <th>Text</th>
-            <th>Date and Time</th>
-            <th>Delete</th>
-            <th>Update</th>
-        </tr>
-        <tr th:each="post : ${posts}">
-            <td th:utext="${post.userId}">...</td>
-            <td th:utext="${post.message}">...</td>
-            <td th:utext="${post.date}">...</td>
-            <td th:if="${post.userId == #request.getParameter('userId')}">
-                <form action="#" th:action="@{'/feed'}" th:method="delete">
-                    <input type="hidden" th:value="${post}"/>
-                    <button type="submit" id="submitButton">Delete</button>
-                </form>
-            </td>
-            <td></td>
-        </tr>
-    </table>
-</div>
-
-<div class="news_feed" th:each="post : ${posts}">
-    <div class="_post_content">
-
-        <div class="post_header">
-            <!--<a class="post_image" href="/zanevskoe">-->
-                <!--<img src="https://pp.userapi.com/c620523/v620523823/1da54/x4jRv-KDX4w.jpg" width="50" height="50" class="post_img"> </a>-->
-
-            <div class="post_header_info">
-                <h5 class="post_author">
-                    <a class="author" href="#" th:utext="${post.userId}"></a></h5>
-                <div class="post_date"><a class="post_link"><span class="rel_date rel_date_needs_update"
-                                                                  th:utext="${post.date}"></span></a></div>
-            </div>
-        </div>
-        <div class="post_content">
-            <div class="post_info">
-                <div class="wall_text">
-                    <div id="wpt184981823_3932" class="wall_post_cont _wall_post_cont">
-                        <div class="wall_post_text" th:utext="${post.message}"></div>
-                    </div>
+            <!-- Left-aligned -->
+            <div class="media" th:each="post : ${posts}">
+                <div class="media-left">
+                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading"><span th:utext="${post.firstName}"/> <span th:utext="${post.lastName}"/></h4>
+                    <p th:text="${#dates.format(post.date, 'hh:mm dd-MMM-yyyy')}"></p>
+                    <p th:utext="${post.message}"></p>
                 </div>
             </div>
         </div>
+        <div class="col-sm-2"></div>
+
     </div>
 </div>
 
-<th:block th:replace="partials/footer"></th:block>
+<footer th:replace="fragments/footer :: footer"/>
 </body>
 </html>

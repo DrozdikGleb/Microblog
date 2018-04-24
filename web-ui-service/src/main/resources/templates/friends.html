@@ -1,15 +1,41 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Friends</title>
-    <th:block th:replace="partials/head"></th:block>
-</head>
+<head lang="en" th:include="fragments/header :: header-css">
+
 <body>
-<th:block th:replace="partials/nav"></th:block>
+<header th:replace="fragments/header :: header"/>
 
+<div class="page-header">
+    <h1>Друзья</h1>
+</div>
 
-<th:block th:replace="partials/footer"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="media" th:unless="${enableSearch}" th:each="friend : ${friends}">
+                <div class="media-left">
+                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" th:utext="${friend.firstName} *{friend.lastName}"></h4>
+                    <p th:utext="${friend.email}"> </p>
+                </div>
+            </div>
+            <div class="media" th:if="${enableSearch}" th:each="user : ${users}">
+                <div class="media-left">
+                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" th:utext="${user.firstName} *{user.lastName}"></h4>
+                    <p th:utext="${user.email}"> </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"/>
 </body>
 </html>

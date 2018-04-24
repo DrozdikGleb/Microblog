@@ -1,13 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Login page</title>
-
-    <th:block th:replace="partials/head"></th:block>
-
-</head>
+<head lang="en" th:include="fragments/header :: header-css">
 <body>
 
 <h1>Registration Page</h1>
@@ -35,6 +28,6 @@
     </form>
 </div>
 
-<th:block th:replace="partials/footer"></th:block>
+<footer th:replace="fragments/footer :: footer"/>
 </body>
 </html>

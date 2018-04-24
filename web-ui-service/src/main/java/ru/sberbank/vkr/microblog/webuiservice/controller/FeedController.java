@@ -1,74 +1,122 @@
 package ru.sberbank.vkr.microblog.webuiservice.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.sberbank.vkr.microblog.webuiservice.dto.PostDto;
-import ru.sberbank.vkr.microblog.webuiservice.dto.UserDto;
-import ru.sberbank.vkr.microblog.webuiservice.entity.AppUser;
-import ru.sberbank.vkr.microblog.webuiservice.service.FriendsExchangeClient;
-import ru.sberbank.vkr.microblog.webuiservice.service.PostExchangeClient;
-import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeClient;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import org.springframework.web.client.HttpClientErrorException;
+import ru.sberbank.vkr.microblog.webuiservice.dto.PostDto;
+import ru.sberbank.vkr.microblog.webuiservice.entity.AppUser;
+import ru.sberbank.vkr.microblog.webuiservice.entity.Post;
+import ru.sberbank.vkr.microblog.webuiservice.entity.Profile;
+import ru.sberbank.vkr.microblog.webuiservice.service.FriendsExchangeService;
+import ru.sberbank.vkr.microblog.webuiservice.service.PostExchangeService;
+import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeService;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/feed")
 public class FeedController {
-
+    public static final String MODEL_ATTRIBUTE_POSTS = "posts";
+    public static final String MODEL_ATTRIBUTE_NEW_POST = "newPost";
+    public static final String MODEL_ATTRIBUTE_UPDATED_POST = "updatedPost";
+    public static final String MODEL_ATTRIBUTE_DELETED_POST = "deletePost";
+    public static final String MODEL_ATTRIBUTE_USER = "user";
+    public static final String REDIRECT_FEED = "redirect:feed";
+    private static final Logger logger = LoggerFactory.getLogger(FeedController.class);
     private static final String FEED_VIEW = "feed";
-    private final PostExchangeClient postExchangeClient;
-    private final FriendsExchangeClient friendsExchangeClient;
-    private final ProfileExchangeClient profileExchangeClient;
+    private final PostExchangeService postExchangeService;
+    private final FriendsExchangeService friendsExchangeService;
+    private final ProfileExchangeService profileExchangeService;
 
     @Autowired
-    public FeedController(PostExchangeClient postExchangeClient,
-                          FriendsExchangeClient friendsExchangeClient,
-                          ProfileExchangeClient profileExchangeClient) {
-        this.postExchangeClient = postExchangeClient;
-        this.friendsExchangeClient = friendsExchangeClient;
-        this.profileExchangeClient = profileExchangeClient;
+    public FeedController(PostExchangeService postExchangeService,
+                          FriendsExchangeService friendsExchangeService,
+                          ProfileExchangeService profileExchangeService) {
+        this.postExchangeService = postExchangeService;
+        this.friendsExchangeService = friendsExchangeService;
+        this.profileExchangeService = profileExchangeService;
     }
 
     @GetMapping
     public String getFeed(Model model, Authentication authentication) {
+        logger.debug("Rendering feed page.");
+
         AppUser currentUser = (AppUser) authentication.getPrincipal();
 
-        UserDto user = profileExchangeClient.getUser(currentUser.getId());
-        model.addAttribute("user", user);
+        Profile user = profileExchangeService.getUser(currentUser.getId());
+        model.addAttribute(MODEL_ATTRIBUTE_USER, user);
 
         List<Long> friendsIdList = new ArrayList<>();
         friendsIdList.add(currentUser.getId());
-        friendsIdList.addAll(friendsExchangeClient.getFriendsList(currentUser.getId()));
+        friendsIdList.addAll(friendsExchangeService.getFriendsList(currentUser.getId()));
 
-        List<PostDto> posts = postExchangeClient.getUsersPost(friendsIdList);
+        List<Post> posts = postExchangeService.getUsersPost(friendsIdList);
+        List<Profile> profiles = profileExchangeService.getUsersList();
+        //TODO: Раскомментировать и удалить строку выше как будет функционал в микросервисе
+//        List<Profile> profiles = profileExchangeService.getFriendsList(friendsIdList);
+
+        Map<Long, Profile> profileMap = profiles.stream()
+                .collect(Collectors.toMap(Profile::getId, Function.identity()));
+
+        posts.forEach(post -> {
+            post.setFirstName(profileMap.get(post.getUserId()).getFirstName());
+            post.setLastName(profileMap.get(post.getUserId()).getLastName());
+        });
+
         posts.sort(Comparator.comparing(PostDto::getDate));
 
-        model.addAttribute("posts", posts);
-        model.addAttribute("newPost", new PostDto(currentUser.getId(), null));
+        model.addAttribute(MODEL_ATTRIBUTE_POSTS, posts);
+        model.addAttribute(MODEL_ATTRIBUTE_NEW_POST, new PostDto());
         return FEED_VIEW;
     }
 
     @PostMapping
-    public String addPost(@ModelAttribute("newPost") PostDto postDto, Model model, Authentication authentication) {
-        postExchangeClient.addPost(postDto);
-        return getFeed(model, authentication);
+    public String addPost(@ModelAttribute(MODEL_ATTRIBUTE_NEW_POST) Post post, Authentication authentication) {
+        logger.debug("Process creating new post: {}", post);
+
+        if (!post.getMessage().equals("") && post.getMessage() != null) {
+            logger.debug("Post is valid");
+            post.setUserId(((AppUser) authentication.getPrincipal()).getId());
+            postExchangeService.addPost(post);
+        }
+        return REDIRECT_FEED;
     }
 
     @DeleteMapping
-    @ResponseBody
-    public String deletePost(@ModelAttribute("deletePost") PostDto postDto, Model model, Authentication authentication) {
-        postExchangeClient.deletePost(postDto.getPostId());
-        return getFeed(model, authentication);
+    public String deletePost(@ModelAttribute(MODEL_ATTRIBUTE_DELETED_POST) Post post, Authentication authentication) {
+        logger.debug("Process deleting post: {}", post);
+
+        AppUser currentUser = (AppUser) authentication.getPrincipal();
+        if (post.getUserId() != currentUser.getId()) {
+            logger.debug("Access denied for deleting post: {} by user {}", post, currentUser);
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Access denied");
+        }
+
+        postExchangeService.deletePost(post.getPostId());
+        return REDIRECT_FEED;
     }
 
     @PutMapping
-    @ResponseBody
-    public String updatePost(@ModelAttribute("updatedPost") PostDto postDto, Model model, Authentication authentication) {
-        return getFeed(model, authentication);
+    public String updatePost(@ModelAttribute(MODEL_ATTRIBUTE_UPDATED_POST) Post post, Authentication authentication) {
+        logger.debug("Process updating post: {}", post);
+
+        AppUser currentUser = (AppUser) authentication.getPrincipal();
+        if (post.getUserId() != currentUser.getId()) {
+            logger.debug("Access denied for updating post: {} by user {}", post, currentUser);
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Access denied");
+        }
+
+        postExchangeService.updatePost(post);
+        return REDIRECT_FEED;
     }
 }

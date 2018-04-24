@@ -11,28 +11,32 @@
     <name>web-ui-service</name>
     <description>Demo project for SberTech</description>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.1.RELEASE</version>
-    </parent>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-cloud.version>Edgware.SR3</spring-cloud.version>
+
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
+
+        <spring-cloud.version>Edgware.SR3</spring-cloud.version>
+        <spring-boot-maven-plugin.version>2.0.1.RELEASE</spring-boot-maven-plugin.version>
+
+        <jquery.version>3.3.1-1</jquery.version>
+        <bootstrap.version>4.1.0</bootstrap.version>
+        <font-awesome.version>4.7.0</font-awesome.version>
+        <mdbfree.version>3.4.1</mdbfree.version>
+        <popper.js.version>1.14.1</popper.js.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.12.RELEASE</version>
+    </parent>
 
+
+    <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -41,7 +45,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -67,6 +71,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>1.4.4.RELEASE</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -90,7 +99,32 @@
             <optional>true</optional>
         </dependency>
 
-
+        <!--Bootstrap-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${jquery.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${bootstrap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>${font-awesome.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>mdbfree</artifactId>
+            <version>${mdbfree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>popper.js</artifactId>
+            <version>${popper.js.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -98,7 +132,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.0.1.RELEASE</version>
+                <version>${spring-boot-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>

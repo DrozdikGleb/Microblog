@@ -1,55 +1,55 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Login page</title>
-
-    <th:block th:replace="partials/head"></th:block>
-
-</head>
+<head lang="en" th:include="fragments/header :: header-css">
 <body>
+<!--<th:block th:replace="partials/head"/>-->
 
-<h1>Login</h1>
-
-<!-- /login?error=true -->
-<div th:if="${#request.getParameter('error') == 'true'}"
-     style="color:red;margin:10px 0px;">
-    Login Failed!!!<br/>
-    Reason :
-    <span th:if="${#session!= null and #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}"
-          th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}">
+<div class="container-fluid">
+    <!-- /login?error=true -->
+    <div th:if="${#request.getParameter('error') == 'true'}"
+         style="color:red;margin:10px 0px;">
+        Login Failed!!!<br/>
+        Reason :
+        <span th:if="${#session!= null and #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}"
+              th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}">
                 Static summary
          </span>
+    </div>
 
+    <div class="container-fluid">
+        <form class="form-horizontal" th:action="@{/j_spring_security_check}" method='POST'>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Логин:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="login" placeholder="Введите логин" name="username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="pwd">Пароль:</label>
+                <div class="col-sm-6">
+                    <input type="password" class="form-control" id="pwd" placeholder="Введите пароль" name="password">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <br/>
+    <div class="container-fluid">
+        <form name='registration' class="form-horizontal" th:action="@{/register}" method='GET'>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">Регистрация</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
 </div>
-
-<h3>Enter user name and password:</h3>
-<div class="container">
-    <form name='lp' th:action="@{/j_spring_security_check}" method='POST'>
-        <table>
-            <tr>
-                <td>User:</td>
-                <td><input type='text' name='username' value=''></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type='password' name='password'/></td>
-            </tr>
-            <tr>
-                <td><button class="btn btn-lg btn-primary btn-block" type="submit">Sing in</button></td>
-            </tr>
-        </table>
-    </form>
-</div>
-
-<br/>
-
-<form th:action="@{/register}" method='GET'>
-    <input type="button" value="Registration">
-</form>
-
-
-<th:block th:replace="partials/footer"></th:block>
+    <footer th:replace="fragments/footer :: footer"/>
 </body>
 </html>

@@ -11,10 +11,10 @@ public class AppUser extends User {
     private final long id;
 
     public AppUser(String username, String password, boolean enabled,
-                    boolean accountNonExpired, boolean credentialsNonExpired,
-                    boolean accountNonLocked,
-                    Collection<? extends GrantedAuthority> authorities,
-                    long id) {
+                   boolean accountNonExpired, boolean credentialsNonExpired,
+                   boolean accountNonLocked,
+                   Collection<? extends GrantedAuthority> authorities,
+                   long id) {
 
         super(username, password, enabled, accountNonExpired,
                 credentialsNonExpired, accountNonLocked, authorities);
