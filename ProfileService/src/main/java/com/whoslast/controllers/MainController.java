@@ -36,17 +36,20 @@ public class MainController {
 
 	//-------------------Retrieve list of Users by id--------------------------------------------------------
 
-	@RequestMapping(value = "/users/{ids}", method = RequestMethod.GET)
-	public ResponseEntity<Iterable<User>> listUsersById(@PathVariable("ids") String[] ids) {
+
+	@RequestMapping(value = "/user/getbyids/", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<User>> listUsersById(@RequestBody List<Long> usersId) {
 		User user;
-		System.out.println("listing users");
 		List<User> list = new ArrayList<>();
 
-		for(String el: ids){
-			user = userRepository.findOne(Long.valueOf(el));
-			user.setLogin(null);
-			user.setPassword(null);
-			list.add(user);
+		for(long el: usersId){
+			user = userRepository.findOne(el);
+			if(user != null) {
+				user.setLogin(null);
+				user.setPassword(null);
+				list.add(user);
+			}
 		}
 
 		return new ResponseEntity<>(list, HttpStatus.OK);
