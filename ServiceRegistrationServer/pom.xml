@@ -7,6 +7,7 @@
     <groupId>ru.sberbank.homework.project</groupId>
     <artifactId>ServiceRegistrationServer</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
 
     <parent>
@@ -38,12 +39,16 @@
             <version>1.4.4.RELEASE</version>
         </dependency>
         <dependency>
+            <groupId>com.github.vanroy</groupId>
+            <artifactId>spring-cloud-dashboard</artifactId>
+            <version>1.2.0.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 
