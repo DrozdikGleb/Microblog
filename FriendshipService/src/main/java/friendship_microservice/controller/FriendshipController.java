@@ -47,13 +47,31 @@ public class FriendshipController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{user_id}")
     public ResponseEntity<List<Long>> getFriendsList(@PathVariable("user_id") long user_id) {
-        List<Friendship> friendsList = friendshipRepository.findByUserIdLike(user_id);
+        List<Long> friendsList = getFriendsIdsOfCurrentUser(user_id);
         if (friendsList.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Long> friends = friendsList.stream()
+        return new ResponseEntity<>(friendsList, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{user_id}")
+    @Transactional
+    public ResponseEntity<Void> deleteAllFriends(@PathVariable("user_id") long user_id) {
+        List<Long> friendsList = getFriendsIdsOfCurrentUser(user_id);
+        if (friendsList.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            for (Long friend_id : friendsList) {
+                friendshipRepository.deleteFriendshipByUserIdAndFriendIdLike(user_id, friend_id);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    private List<Long> getFriendsIdsOfCurrentUser(long user_id) {
+        List<Friendship> friendsList = friendshipRepository.findByUserIdLike(user_id);
+        return friendsList.stream()
                 .map(Friendship::getFriendId)
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 }
