@@ -1,6 +1,6 @@
 package com.whoslast.repo;
 
-import com.whoslast.entities.User;
+import com.whoslast.entities.*;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

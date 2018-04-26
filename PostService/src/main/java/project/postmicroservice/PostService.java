@@ -7,17 +7,15 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import java.io.IOException;
-
 
 @ComponentScan(basePackages = {"project"})
 @EnableEurekaClient
 @EnableJpaAuditing
 @SpringBootApplication(scanBasePackages = {"project"})
 @EnableAutoConfiguration
-public class Application {
+public class PostService {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(PostService.class, args);
     }
 }
