@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head lang="en" th:include="fragments/header :: header-css">
+<head lang="en" th:include="fragments/header :: header-css"/>
 <body>
 
 <header th:replace="fragments/header :: header"/>
@@ -20,9 +20,9 @@
             <br/>
 
             <!-- Left-aligned -->
-            <div class="media" th:each="post : ${posts}">
+            <div class="media" th:if="${posts != null}" th:each="post : ${posts}">
                 <div class="media-left">
-                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px">
+                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px"/>
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading"><span th:utext="${post.firstName}"/> <span th:utext="${post.lastName}"/></h4>

@@ -3,8 +3,6 @@ package ru.sberbank.vkr.microblog.webuiservice.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -19,27 +17,19 @@ import java.util.List;
 public class FriendsExchangeService {
     private static final Logger logger = LoggerFactory.getLogger(ProfileExchangeService.class);
 
-    private static final String FRIEND_SERVICE_NAME = "FRIEND-SERVICE";
+    private static final String FRIENDS_SERVICE_URL = "http://friends-service";
+
     private final RestTemplate restTemplate;
-    private final DiscoveryClient discoveryClient;
-
-    private String friendsServiceUrl;
-
 
     @Autowired
-    public FriendsExchangeService(RestTemplate restTemplate, DiscoveryClient discoveryClient) {
+    public FriendsExchangeService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.discoveryClient = discoveryClient;
-
-        List<ServiceInstance> instances = discoveryClient.getInstances(FRIEND_SERVICE_NAME);
-        ServiceInstance instance = instances.get(0);
-        friendsServiceUrl = instance.getUri().toString();
     }
 
     public List<Long> getFriendsList(Long userId) {
         logger.debug("Request microservice to get friends list for user with id: {}", userId);
         try {
-            Long[] friends = restTemplate.getForObject(friendsServiceUrl + "/friendship/{userId}", Long[].class, userId);
+            Long[] friends = restTemplate.getForObject(FRIENDS_SERVICE_URL + "/friendship/{userId}", Long[].class, userId);
             return Arrays.asList(friends);
         } catch (HttpClientErrorException hceEx) {
             if (hceEx.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -57,7 +47,7 @@ public class FriendsExchangeService {
     public void follow(Long userId, Long friendId) {
         logger.debug("Request microservice to add friendship for user: {} - with: {}", userId, friendId);
 
-        restTemplate.postForObject(friendsServiceUrl + "/friendship/{userId}/{friendId}",
+        restTemplate.postForObject(FRIENDS_SERVICE_URL + "/friendship/{userId}/{friendId}",
                 null, Void.class, userId, friendId);
     }
 
@@ -68,7 +58,7 @@ public class FriendsExchangeService {
 
     public void unfollow(Long userId, Long friendId) {
         logger.debug("Request microservice to delete friendship for user: {} - with: {}", userId, friendId);
-        restTemplate.delete(friendsServiceUrl + "/friendship/{userId}/{friendId}", userId, friendId);
+        restTemplate.delete(FRIENDS_SERVICE_URL + "/friendship/{userId}/{friendId}", userId, friendId);
     }
 
     public void unfollow(Profile userProfile, Profile friendProfile) {
@@ -78,8 +68,7 @@ public class FriendsExchangeService {
 
     public void deleteAllUserFriends(Long userId) {
         logger.debug("Request microservice to delete all friendships for user: {}", userId);
-        //TODO: Расскоменнтировать как будет такой функционал в микросервисе друзей
-//        restTemplate.delete(friendsServiceUrl + "/friendship/{userId}", userId);
+        restTemplate.delete(FRIENDS_SERVICE_URL + "/friendship/{userId}", userId);
     }
 
     public void deleteAllUserFriends(Profile userProfile) {

@@ -22,8 +22,6 @@ public class FriendsController {
     private static final String MODEL_ATTRIBUTE_FRIENDS = "friends";
     private static final String MODEL_ATTRIBUTE_USERS = "users";
 
-    private static final String FRIENDS_VIEW = "friends";
-
     private final ProfileExchangeService profileExchangeService;
     private final FriendsExchangeService friendsExchangeService;
 
@@ -50,7 +48,7 @@ public class FriendsController {
                 model.addAttribute(MODEL_ATTRIBUTE_FRIENDS, friends);
             }
         }
-        return FRIENDS_VIEW;
+        return "friends";
     }
 
     @PostMapping
@@ -59,7 +57,7 @@ public class FriendsController {
         logger.debug("Process adding new friendship for user: {} with: {}", currentUser.getId(), friendProfile);
 
         friendsExchangeService.follow(currentUser.getId(), friendProfile.getId());
-        return FRIENDS_VIEW;
+        return "friends";
     }
 
     @DeleteMapping
@@ -68,6 +66,6 @@ public class FriendsController {
         logger.debug("Process deleting friendship for user: {} with: {}", currentUser.getId(), friendProfile);
 
         friendsExchangeService.unfollow(currentUser.getId(), friendProfile.getId());
-        return FRIENDS_VIEW;
+        return "friends";
     }
 }

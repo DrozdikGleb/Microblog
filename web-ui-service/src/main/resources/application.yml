@@ -1,28 +1,16 @@
 server:
   port: ${PORT:8098}
 
-# configure eureka client
-#eureka:
-#  instance:
-#    leaseRenewalIntervalInSeconds: 1
-#    leaseExpirationDurationInSeconds: 3
-#  client:
-#    serviceUrl:
-#      defaultZone: http://localhost:1111/eureka/
-
-# custom attribute for the actuator info endpoint
-info:
-  app:
-    name: web-service
-
 # give the application a name
 spring:
   application:
-    name: WEB-SERVICE
+    name: web-service
 
 
 eureka:
   client:
+    fetchRegistry: true
+    registryFetchIntervalSeconds: 5
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:

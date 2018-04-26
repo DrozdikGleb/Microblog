@@ -15,7 +15,6 @@ import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeService;
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    public static final String LOGIN_VIEW = "login";
 
     private final ProfileExchangeService profileExchangeService;
 
@@ -27,7 +26,7 @@ public class LoginController {
     @GetMapping("/login")
     public String getLoginPage() {
         logger.debug("Rendering login page.");
-        return LOGIN_VIEW;
+        return "login";
     }
 
     @GetMapping("/logoutSuccessful")
@@ -49,7 +48,7 @@ public class LoginController {
         logger.debug("Process creating new user: {}", user);
 
         profileExchangeService.createUser(user);
-        return LOGIN_VIEW;
+        return "login";
     }
 }
 

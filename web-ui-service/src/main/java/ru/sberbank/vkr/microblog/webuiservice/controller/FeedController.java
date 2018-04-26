@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import ru.sberbank.vkr.microblog.webuiservice.dto.PostDto;
 import ru.sberbank.vkr.microblog.webuiservice.entity.AppUser;
 import ru.sberbank.vkr.microblog.webuiservice.entity.Post;
@@ -19,6 +21,8 @@ import ru.sberbank.vkr.microblog.webuiservice.service.FriendsExchangeService;
 import ru.sberbank.vkr.microblog.webuiservice.service.PostExchangeService;
 import ru.sberbank.vkr.microblog.webuiservice.service.ProfileExchangeService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,14 +30,14 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/feed")
 public class FeedController {
-    public static final String MODEL_ATTRIBUTE_POSTS = "posts";
-    public static final String MODEL_ATTRIBUTE_NEW_POST = "newPost";
-    public static final String MODEL_ATTRIBUTE_UPDATED_POST = "updatedPost";
-    public static final String MODEL_ATTRIBUTE_DELETED_POST = "deletePost";
-    public static final String MODEL_ATTRIBUTE_USER = "user";
-    public static final String REDIRECT_FEED = "redirect:feed";
     private static final Logger logger = LoggerFactory.getLogger(FeedController.class);
-    private static final String FEED_VIEW = "feed";
+
+    private static final String MODEL_ATTRIBUTE_POSTS = "posts";
+    private static final String MODEL_ATTRIBUTE_NEW_POST = "newPost";
+    private static final String MODEL_ATTRIBUTE_UPDATED_POST = "updatedPost";
+    private static final String MODEL_ATTRIBUTE_DELETED_POST = "deletePost";
+    private static final String MODEL_ATTRIBUTE_USER = "user";
+
     private final PostExchangeService postExchangeService;
     private final FriendsExchangeService friendsExchangeService;
     private final ProfileExchangeService profileExchangeService;
@@ -61,23 +65,26 @@ public class FeedController {
         friendsIdList.addAll(friendsExchangeService.getFriendsList(currentUser.getId()));
 
         List<Post> posts = postExchangeService.getUsersPost(friendsIdList);
-        List<Profile> profiles = profileExchangeService.getUsersList();
-        //TODO: Раскомментировать и удалить строку выше как будет функционал в микросервисе
-//        List<Profile> profiles = profileExchangeService.getFriendsList(friendsIdList);
 
-        Map<Long, Profile> profileMap = profiles.stream()
-                .collect(Collectors.toMap(Profile::getId, Function.identity()));
+        if (!posts.isEmpty()) {
+            List<Profile> profiles = profileExchangeService.getFriendsList(friendsIdList);
 
-        posts.forEach(post -> {
-            post.setFirstName(profileMap.get(post.getUserId()).getFirstName());
-            post.setLastName(profileMap.get(post.getUserId()).getLastName());
-        });
+            Map<Long, Profile> profileMap = profiles.stream()
+                    .collect(Collectors.toMap(Profile::getId, Function.identity()));
 
-        posts.sort(Comparator.comparing(PostDto::getDate));
+            posts.forEach(post -> {
+                post.setFirstName(profileMap.get(post.getUserId()).getFirstName());
+                post.setLastName(profileMap.get(post.getUserId()).getLastName());
+            });
 
-        model.addAttribute(MODEL_ATTRIBUTE_POSTS, posts);
+            posts.sort(Comparator.comparing(PostDto::getDate));
+
+            model.addAttribute(MODEL_ATTRIBUTE_POSTS, posts);
+        }
         model.addAttribute(MODEL_ATTRIBUTE_NEW_POST, new PostDto());
-        return FEED_VIEW;
+
+        model.addAttribute("title", "Новости");
+        return "feed";
     }
 
     @PostMapping
@@ -89,7 +96,7 @@ public class FeedController {
             post.setUserId(((AppUser) authentication.getPrincipal()).getId());
             postExchangeService.addPost(post);
         }
-        return REDIRECT_FEED;
+        return "redirect:/feed";
     }
 
     @DeleteMapping
@@ -103,7 +110,7 @@ public class FeedController {
         }
 
         postExchangeService.deletePost(post.getPostId());
-        return REDIRECT_FEED;
+        return "redirect:/feed";
     }
 
     @PutMapping
@@ -117,6 +124,6 @@ public class FeedController {
         }
 
         postExchangeService.updatePost(post);
-        return REDIRECT_FEED;
+        return "redirect:/feed";
     }
 }

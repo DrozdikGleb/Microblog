@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head lang="en" th:include="fragments/header :: header-css">
+<head lang="en" th:include="fragments/header :: header-css"/>
 
 <body>
 <header th:replace="fragments/header :: header"/>
@@ -15,7 +15,7 @@
         <div class="col-sm-8">
             <div class="media" th:unless="${enableSearch}" th:each="friend : ${friends}">
                 <div class="media-left">
-                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px">
+                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px"/>
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading" th:utext="${friend.firstName} *{friend.lastName}"></h4>
@@ -24,7 +24,7 @@
             </div>
             <div class="media" th:if="${enableSearch}" th:each="user : ${users}">
                 <div class="media-left">
-                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px">
+                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px"/>
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading" th:utext="${user.firstName} *{user.lastName}"></h4>

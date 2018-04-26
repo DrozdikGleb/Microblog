@@ -22,9 +22,6 @@ public class ProfileController {
 
     private static final String MODEL_ATTRIBUTE_USER = "user";
 
-    private static final String PROFILE_VIEW = "me";
-    private static final String LOGIN_VIEW = "login";
-
     private final ProfileExchangeService profileExchangeService;
     private final PostExchangeService postExchangeService;
     private final FriendsExchangeService friendsExchangeService;
@@ -51,7 +48,7 @@ public class ProfileController {
             model.addAttribute("enableEdit", true);
         }
 
-        return PROFILE_VIEW;
+        return "me";
     }
 
     @PostMapping("/edit")
@@ -66,7 +63,7 @@ public class ProfileController {
             throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Access denied");
         }
         profileExchangeService.updateUser(user);
-        return "redirect:/" + PROFILE_VIEW;
+        return "redirect:/me";
     }
 
     @PostMapping("/delete")
@@ -84,7 +81,7 @@ public class ProfileController {
         friendsExchangeService.deleteAllUserFriends(user);
         logger.debug("Deleted user: {}", user);
 
-        return "redirect:/" + LOGIN_VIEW;
+        return "redirect:/login";
     }
 
 }

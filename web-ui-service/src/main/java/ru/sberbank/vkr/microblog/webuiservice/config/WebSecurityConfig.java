@@ -34,28 +34,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable();
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers(
+                        "/",
+                        "/js/**",
+                        "/css/**",
+                        "/img/**",
+                        "/webjars/**",
+                        "/register",
+                        "/health", "/info").permitAll()
+                .anyRequest().authenticated()
+                .and();
 
-        // The pages does not require login
-        http.authorizeRequests()
-                .antMatchers("/static/css").permitAll()
-                .antMatchers("/", "/login", "/logout", "/logoutSuccessful", "/register").permitAll()
-                .anyRequest().authenticated();
-
-        // Config for Login Form
-        http.authorizeRequests().and().csrf().disable().formLogin()//
-                // Submit URL of login page.
-                .loginProcessingUrl("/j_spring_security_check") // Submit URL
-                .loginPage("/login")//
-
-                .defaultSuccessUrl("/", true)//
-                .failureUrl("/login?error=true")//
-                .usernameParameter("username")//
+        http.formLogin()
+                .loginProcessingUrl("/j_spring_security_check")
+                .loginPage("/login")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
+                .usernameParameter("username")
                 .passwordParameter("password")
-                // Config for Logout Page
-                .and().logout().logoutUrl("/logout")
-                .logoutSuccessUrl("/logoutSuccessful");
+                .permitAll();
 
+        http.logout()
+                .permitAll()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true);
     }
 }
 

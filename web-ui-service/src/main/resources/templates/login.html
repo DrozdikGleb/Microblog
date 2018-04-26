@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head lang="en" th:include="fragments/header :: header-css">
+<head lang="en" th:include="fragments/header :: header-css"/>
 <body>
-<!--<th:block th:replace="partials/head"/>-->
 
 <div class="container-fluid">
     <!-- /login?error=true -->
-    <div th:if="${#request.getParameter('error') == 'true'}"
+    <div th:if="${#httpServletRequest.getParameter('error') == 'true'}"
          style="color:red;margin:10px 0px;">
         Login Failed!!!<br/>
         Reason :
-        <span th:if="${#session!= null and #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}"
-              th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}">
+        <span th:if="${#httpSession!= null and #httpSession.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}"
+              th:utext="${#httpSession.getAttribute('SPRING_SECURITY_LAST_EXCEPTION')}">
                 Static summary
          </span>
     </div>
@@ -21,13 +20,13 @@
             <div class="form-group">
                 <label class="control-label col-sm-2">Логин:</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="login" placeholder="Введите логин" name="username">
+                    <input type="text" class="form-control" id="login" placeholder="Введите логин" name="username"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-sm-2" for="pwd">Пароль:</label>
                 <div class="col-sm-6">
-                    <input type="password" class="form-control" id="pwd" placeholder="Введите пароль" name="password">
+                    <input type="password" class="form-control" id="pwd" placeholder="Введите пароль" name="password"/>
                 </div>
             </div>
             <div class="form-group">

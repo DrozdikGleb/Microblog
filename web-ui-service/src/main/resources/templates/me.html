@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head lang="en" th:include="fragments/header :: header-css">
+<head lang="en" th:include="fragments/header :: header-css"/>
 
 <body>
 <header th:replace="fragments/header :: header"/>
@@ -27,7 +27,7 @@
                     <form class="form-horizontal" th:action="@{/me/delete}" method='post'>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <input type="hidden" name="userId" th:field="*{id}">
+                                <input type="hidden" name="userId" th:field="*{id}"/>
                                 <button type="submit" class="btn btn-primary">Удалить пользователя</button>
                             </div>
                         </div>
@@ -48,12 +48,12 @@
 
             <form class="form-horizontal" th:if="${enableEdit}" th:action="@{/me/edit}" th:object="${user}" method='post'>
                 <div class="form-group">
-                    <input type="hidden" id="userId" name="userId" th:field="*{id}">
+                    <input type="hidden" id="userId" name="userId" th:field="*{id}"/>
 
                     <label class="control-label col-sm-2">e-mail:</label>
                     <div class="col-sm-6">
                         <input type="email" class="form-control" id="email" placeholder="Введите e-mail" name="email"
-                               th:field="*{email}">
+                               th:field="*{email}"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -61,7 +61,7 @@
                     <div class="col-sm-6">
                         <input type="text" class="form-control" id="firstName" placeholder="Введите имя"
                                name="firstName"
-                               th:field="*{firstName}">
+                               th:field="*{firstName}"/>
                     </div>
                 </div>
                 <div class="form-group">
@@ -69,7 +69,7 @@
                     <div class="col-sm-6">
                         <input type="text" class="form-control" id="lastName" placeholder="Введите фамилию"
                                name="lastName"
-                               th:field="*{lastName}">
+                               th:field="*{lastName}"/>
                     </div>
                 </div>
 

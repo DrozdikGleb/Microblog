@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="header-css">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title th:text="${title}"></title>
+    <title th:text="${title}">Title</title>
     <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.0/css/bootstrap.min.css"
           th:href="@{webjars/bootstrap/4.1.0/css/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" media="screen"
@@ -43,7 +43,7 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item" th:if="${#request.userPrincipal != null}">
+                    <li class="nav-item" th:if="${#httpServletRequest.userPrincipal != null}">
                         <a class="nav-link" th:href="@{/logout}">Выйти</a>
                     </li>
                 </ul>
