@@ -77,7 +77,7 @@ public class FeedController {
                 post.setLastName(profileMap.get(post.getUserId()).getLastName());
             });
 
-            posts.sort(Comparator.comparing(PostDto::getDate));
+            posts.sort(Comparator.comparing(PostDto::getDate).reversed());
 
             model.addAttribute(MODEL_ATTRIBUTE_POSTS, posts);
         }

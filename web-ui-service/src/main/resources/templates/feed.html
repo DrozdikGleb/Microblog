@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en" th:include="fragments/header :: header-css"/>
+<meta charset="UTF-8"/>
 <body>
 
 <header th:replace="fragments/header :: header"/>
@@ -22,13 +23,22 @@
             <!-- Left-aligned -->
             <div class="media" th:if="${posts != null}" th:each="post : ${posts}">
                 <div class="media-left">
-                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px"/>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="media-object" style="width:60px"/>
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading"><span th:utext="${post.firstName}"/> <span th:utext="${post.lastName}"/></h4>
                     <p th:text="${#dates.format(post.date, 'hh:mm dd-MMM-yyyy')}"></p>
                     <p th:utext="${post.message}"></p>
                 </div>
+                <!--<div class="media-right">-->
+                    <!--<form class="form-horizontal" th:action="@{/feed/delete}" method='post'>-->
+                        <!--<div class="form-group">-->
+                            <!--<div class="col-sm-offset-2 col-sm-10">-->
+                                <!--<button type="submit" name='postId' th:value="${post.postId}" class="btn btn-small">Отписаться</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</form>-->
+                <!--</div>-->
             </div>
         </div>
         <div class="col-sm-2"></div>

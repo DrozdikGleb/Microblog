@@ -1,88 +1,108 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head lang="en" th:include="fragments/header :: header-css"/>
+<meta charset="UTF-8"/>
+<head lang="en" th:include="fragments/header :: header-css">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+            font-family: arial;
+        }
+
+        .title {
+            color: grey;
+            font-size: 18px;
+        }
+
+        button {
+            border: none;
+            outline: 0;
+            display: inline-block;
+            padding: 8px;
+            color: white;
+            background-color: #000;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 22px;
+            color: black;
+        }
+
+        button:hover, a:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
 
 <body>
 <header th:replace="fragments/header :: header"/>
-
-<div class="container-fluid">
-    <br/>
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8">
-            <div class="panel-group" th:unless="${enableEdit}" th:object="${user}">
-                <div class="panel panel-default">
-                    <div class="panel-heading">e-mail</div>
-                    <div class="panel-body" th:text="*{email}"></div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">Имя</div>
-                    <div class="panel-body" th:text="*{firstName}"></div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">Фвмилия</div>
-                    <div class="panel-body" th:text="*{lastName}"></div>
-                </div>
-                <div class="panel panel-default">
-                    <form class="form-horizontal" th:action="@{/me/delete}" method='post'>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <input type="hidden" name="userId" th:field="*{id}"/>
-                                <button type="submit" class="btn btn-primary">Удалить пользователя</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-
-
-            <form class="form-horizontal" th:unless="${enableEdit}" th:action="@{/me}" method='get'>
+<div class="card">
+    <div class="panel-group" th:unless="${enableEdit}" th:object="${user}" align="center">
+        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" style="width:20%" align="center"/>
+        <h2 th:utext="*{firstName + ' ' + lastName}"></h2>
+        <h4 th:utext="*{'email -' + ' ' + email}"></h4>
+        <div class="panel panel-default">
+            <form class="form-horizontal" th:action="@{/me/delete}" method='post'>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <input type='hidden' name='act' value='edit'/>
-                        <button type="submit" class="btn btn-primary">Изменить</button>
-                    </div>
-                </div>
-            </form>
-
-            <form class="form-horizontal" th:if="${enableEdit}" th:action="@{/me/edit}" th:object="${user}" method='post'>
-                <div class="form-group">
-                    <input type="hidden" id="userId" name="userId" th:field="*{id}"/>
-
-                    <label class="control-label col-sm-2">e-mail:</label>
-                    <div class="col-sm-6">
-                        <input type="email" class="form-control" id="email" placeholder="Введите e-mail" name="email"
-                               th:field="*{email}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Имя:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="firstName" placeholder="Введите имя"
-                               name="firstName"
-                               th:field="*{firstName}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Фамилия:</label>
-                    <div class="col-sm-6">
-                        <input type="text" class="form-control" id="lastName" placeholder="Введите фамилию"
-                               name="lastName"
-                               th:field="*{lastName}"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-primary">Применить</button>
+                        <input type="hidden" name="userId" th:field="*{id}"/>
+                        <button type="submit" class="btn btn-primary">Удалить пользователя</button>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="col-sm-2"></div>
+        <form class="form-horizontal" th:unless="${enableEdit}" th:action="@{/me}" method='get'>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input type='hidden' name='act' value='edit'/>
+                <button type="submit" class="btn btn-primary">Изменить</button>
+            </div>
+        </div>
+    </form>
     </div>
-</div>
+
+        <form class="form-horizontal" th:if="${enableEdit}" th:action="@{/me/edit}" th:object="${user}" method='post'>
+            <div class="form-group">
+                <input type="hidden" id="userId" name="userId" th:field="*{id}"/>
+
+                <label class="control-label col-sm-2">e-mail:</label>
+                <div class="col-sm-6">
+                    <input type="email" class="form-control" id="email" placeholder="Введите e-mail" name="email"
+                           th:field="*{email}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Имя:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="firstName" placeholder="Введите имя"
+                           name="firstName"
+                           th:field="*{firstName}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Фамилия:</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="lastName" placeholder="Введите фамилию"
+                           name="lastName"
+                           th:field="*{lastName}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Применить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
 <footer th:replace="fragments/footer :: footer"/>
 </body>
 </html>

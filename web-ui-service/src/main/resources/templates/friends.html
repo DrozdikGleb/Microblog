@@ -1,41 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en" th:include="fragments/header :: header-css"/>
+<meta charset="UTF-8"/>
 
 <body>
 <header th:replace="fragments/header :: header"/>
-
 <div class="page-header">
     <h1>Друзья</h1>
 </div>
-
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8">
-            <div class="media" th:unless="${enableSearch}" th:each="friend : ${friends}">
-                <div class="media-left">
-                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px"/>
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading" th:utext="${friend.firstName} *{friend.lastName}"></h4>
-                    <p th:utext="${friend.email}"> </p>
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8" align="center">
+        <form class="form-horizontal" th:unless="${enableSearch}" th:action="@{/friends}" method='get'>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <input type='hidden' name='find' value='true'/>
+                    <button type="submit" class="btn btn-primary">Поиск</button>
                 </div>
             </div>
-            <div class="media" th:if="${enableSearch}" th:each="user : ${users}">
-                <div class="media-left">
-                    <img th:src="@{../static/img/no_avatar.png}" class="media-object" style="width:60px"/>
+        </form>
+        <br/>
+        <div class="media" th:unless="${enableSearch}" th:each="friend : ${friends}">
+            <div class="media-left">
+                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="media-object" style="width:60px"/>
+            </div>
+            <div class="media-body">
+                <p th:utext="${friend.firstName + ' ' + friend.lastName}"></p>
+            </div>
+            <form class="form-horizontal" th:action="@{/friends/delete}" method='post'>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" name='id' th:value="${friend.id}" class="btn btn-small">Отписаться</button>
+                    </div>
                 </div>
-                <div class="media-body">
-                    <h4 class="media-heading" th:utext="${user.firstName} *{user.lastName}"></h4>
-                    <p th:utext="${user.email}"> </p>
-                </div>
+            </form>
+
+        </div>
+
+        <div class="media" th:if="${enableSearch}" th:each="user : ${users}">
+            <div class="media-left">
+                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="media-object" style="width:60px"/>
+            </div>
+            <div class="media-middle">
+                <p th:utext="${user.firstName + ' ' + user.lastName}"></p>
+            </div>
+            <div class="media-right">
+                <form class="form-horizontal" th:action="@{/friends/add}" method='post'>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" name='id' th:value="${user.id}" class="btn btn-small">Подписаться</button>
+
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="col-sm-2"></div>
     </div>
+    <div class="col-sm-2"></div>
 </div>
-
 <footer th:replace="fragments/footer :: footer"/>
 </body>
 </html>

@@ -32,13 +32,12 @@ public class FriendsController {
     }
 
     @GetMapping
-    public String getFriends(@RequestParam(value = "find", required = false) boolean edit,
+    public String getFriends(@RequestParam(value = "find", required = false) boolean find,
                              Model model, Authentication authentication) {
         logger.debug("Rendering friends page.");
-
         AppUser currentUser = (AppUser) authentication.getPrincipal();
-        model.addAttribute("enableSearch", edit);
-        if (edit) {
+        model.addAttribute("enableSearch", find);
+        if (find) {
             List<Profile> users = profileExchangeService.getUsersList();
             model.addAttribute(MODEL_ATTRIBUTE_USERS, users);
         } else {
@@ -51,21 +50,20 @@ public class FriendsController {
         return "friends";
     }
 
-    @PostMapping
-    public String addFriend(@ModelAttribute Profile friendProfile, Authentication authentication) {
+    @PostMapping("/add")
+    public String addFriend(@RequestParam(value = "id") Long id, Authentication authentication) {
         AppUser currentUser = (AppUser) authentication.getPrincipal();
-        logger.debug("Process adding new friendship for user: {} with: {}", currentUser.getId(), friendProfile);
-
-        friendsExchangeService.follow(currentUser.getId(), friendProfile.getId());
-        return "friends";
+        logger.debug("Process adding new friendship for user: {} with: {}", currentUser.getId(), id);
+        friendsExchangeService.follow(currentUser.getId(), id);
+        return "redirect:/friends";
     }
 
-    @DeleteMapping
-    public String deleteFriend(@ModelAttribute Profile friendProfile, Authentication authentication) {
+    @PostMapping("/delete")
+    public String deleteFriend(@RequestParam(value = "id") Long id, Authentication authentication) {
         AppUser currentUser = (AppUser) authentication.getPrincipal();
-        logger.debug("Process deleting friendship for user: {} with: {}", currentUser.getId(), friendProfile);
+        logger.debug("Process deleting friendship for user: {} with: {}", currentUser.getId(), id);
 
-        friendsExchangeService.unfollow(currentUser.getId(), friendProfile.getId());
-        return "friends";
+        friendsExchangeService.unfollow(currentUser.getId(), id);
+        return "redirect:/friends";
     }
 }
